@@ -14,7 +14,9 @@
     "seed": "node scripts/seed/index.js",
     "seed:force": "node scripts/seed/index.js --force",
     "seed:prod": "node scripts/seed/index.js --prod",
-    "seed:prod:force": "node scripts/seed/index.js --prod --force"
+    "seed:prod:force": "node scripts/seed/index.js --prod --force",
+    "backup": "node scripts/backup/index.js",
+    "backup:prod": "node scripts/backup/index.js --prod"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

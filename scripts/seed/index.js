@@ -8,10 +8,10 @@ import { loadEnvs } from "../../lib/envConfig.js";
 // Read CLI arguments
 const args = process.argv.slice(2);
 const forceReseed = args.includes("--force");
-const productionSeed = args.includes("--prod");
+const isProduction = args.includes("--prod");
 
 // 1️⃣ Load environment BEFORE dynamic imports
-loadEnvs({ productionSeed });
+loadEnvs({ isProduction });
 
 async function seed() {
     const db = await getDb();
