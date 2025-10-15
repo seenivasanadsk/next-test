@@ -17,7 +17,6 @@
     "seed:prod:force": "node scripts/seed/index.js --prod --force"
   },
   "dependencies": {
-    "@next/env": "^15.5.5",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "mongodb": "^6.20.0",
