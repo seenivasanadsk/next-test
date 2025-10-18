@@ -20,6 +20,8 @@
     "seed:prod:force": "node scripts/seed/index.js --prod --force",
     "backup": "node scripts/backup/index.js",
     "backup:prod": "node scripts/backup/index.js --prod",
+    "backup:show": "node scripts/backup/show.js",
+    "backup:show:prod": "node scripts/backup/show.js --prod",
     "log:clear": "node scripts/log/clear.js",
     "log:clear:force": "node scripts/log/clear.js --force",
     "log:clear:prod": "node scripts/log/clear.js --prod",

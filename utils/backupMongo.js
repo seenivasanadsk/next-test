@@ -33,9 +33,9 @@ export async function backupMongo() {
     }
 
     // Generate filename
-    const { date, time } = getCurrentDateTime(timezone);
-    const safeTime = time.replace(":", "-").replace(" ", "_"); // hh-mm_AM
-    const fileName = `mongo-backup-app-${appName}-db-${dbName}-env-${env}-date-${date}-time-${safeTime}.gz`;
+    const { dateString, timeString } = getCurrentDateTime(timezone);
+    const safeTime = timeString.replace(":", "-").replace(" ", "_"); // hh-mm_AM
+    const fileName = `mongo-backup-app-${appName}-db-${dbName}-env-${env}-date-${dateString}-time-${safeTime}.gz`;
 
     const fullPath = path.join(backupPath, fileName);
 
