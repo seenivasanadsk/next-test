@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { loadEnvs } from "../../lib/envConfig.js";
+import logger from "../../lib/logger.js";
 
 // Get current directory name (equivalent to __dirname in CommonJS)
 const __filename = fileURLToPath(import.meta.url);
@@ -152,7 +153,7 @@ async function showBackupFiles() {
         displayBackupFiles(files);
 
     } catch (error) {
-        console.error("❌ Error showing backup files:", error);
+        logger.error("❌ Error showing backup files:", error);
         process.exit(1);
     }
 }

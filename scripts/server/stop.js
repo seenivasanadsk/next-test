@@ -2,6 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
+import logger from "../../lib/logger.js";
 
 const projectPath = path.resolve();
 const pidFile = path.join(projectPath, "server.pid");
@@ -38,7 +39,7 @@ try {
         console.log("Server log cleared.");
     }
 
-    console.log(`Server with PID ${pid} stopped successfully.`);
+    logger.info(`Server with PID ${pid} stopped successfully.`);
 } catch (err) {
     console.error("Failed to stop server:", err.message);
 }

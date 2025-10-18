@@ -1,4 +1,5 @@
 // scripts/server/reboot.js
+import logger from "../../lib/logger.js";
 import { spawnSync, spawn } from "child_process";
 import fs from "fs";
 import path from "path";
@@ -65,5 +66,5 @@ const child = spawn(
 fs.writeFileSync(pidFile, String(child.pid), "utf-8");
 child.unref();
 
-console.log(`Next.js production server started on port ${PORT} with PID: ${child.pid}`);
+logger.info(`Next.js production server rebooted on port ${PORT} with PID: ${child.pid}`);
 if (SAVE_LOGS) console.log(`Logs redirected to: ${logFile}`);

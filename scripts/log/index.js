@@ -12,7 +12,7 @@ const lines = linesArg ? parseInt(linesArg.split('=')[1]) : 10;
 // Load environment
 loadEnvs({ isProduction });
 
-const logDir = process.env.LOG_DIR || './logs';
+const logDir = process.env.LOG_DIR;
 
 async function showLastLogs(lines = 10) {
     try {

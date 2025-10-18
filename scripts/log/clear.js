@@ -10,7 +10,7 @@ const isProduction = args.includes("--prod");
 // Load environment
 loadEnvs({ isProduction });
 
-const logDir = process.env.LOG_DIR || './logs';
+const logDir = process.env.LOG_DIR;
 const MAX_LOG_DAYS = forceDelete ? 0 : parseInt(process.env.MAX_LOG_DAYS) || 30;
 
 async function clearOldLogs() {

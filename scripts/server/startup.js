@@ -1,4 +1,5 @@
 // scripts\server\startup.js
+import logger from "../../lib/logger.js";
 import { spawn } from "child_process";
 import fs from "fs";
 import path from "path";
@@ -64,6 +65,6 @@ if (!serverRunning) {
     // Detach parent
     child.unref();
 
-    console.log(`Next.js production server started on port ${PORT} with PID: ${child.pid}`);
+    logger.info(`Next.js production server started on port ${PORT} with PID: ${child.pid}`);
     if (SAVE_LOGS) console.log(`Logs redirected to: ${logFile}`);
 }
