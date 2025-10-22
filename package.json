@@ -30,7 +30,13 @@
     "log:tail": "node scripts/log/index.js --lines=20",
     "log:all": "node scripts/log/index.js --lines=100",
     "log:prod": "node scripts/log/index.js --prod",
-    "log:prod:tail": "node scripts/log/index.js --prod --lines=50"
+    "log:prod:tail": "node scripts/log/index.js --prod --lines=50",
+    "task:update": "node scripts/task/taskUpdate.js",
+    "task:list": "node scripts/task/taskList.js",
+    "task:delete": "node scripts/task/taskDelete.js",
+    "task:prod:update": "node scripts/task/taskUpdate.js --prod",
+    "task:prod:list": "node scripts/task/taskList.js --prod",
+    "task:prod:delete": "node scripts/task/taskDelete.js --prod"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

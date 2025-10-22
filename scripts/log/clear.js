@@ -1,6 +1,7 @@
+import logger from '../../lib/logger.js';
+import { loadEnvs } from '../../lib/envConfig.js';
 import fs from 'fs/promises';
 import path from 'path';
-import { loadEnvs } from "../../lib/envConfig.js";
 
 // Read CLI arguments
 const args = process.argv.slice(2);
@@ -15,9 +16,9 @@ const MAX_LOG_DAYS = forceDelete ? 0 : parseInt(process.env.MAX_LOG_DAYS) || 30;
 
 async function clearOldLogs() {
     try {
-        console.log('🔄 Starting log cleanup...');
-        console.log(`📅 Keeping logs from last ${MAX_LOG_DAYS} days`);
-        if (forceDelete) console.log('💥 FORCE MODE: Deleting ALL log files');
+        logger.info('Starting log cleanup...');
+        logger.info(`Keeping logs from last ${MAX_LOG_DAYS} days`);
+        if (forceDelete) logger.warn('💥 FORCE MODE: Deleting ALL log files');
 
         const resolvedLogDir = path.isAbsolute(logDir) ? logDir : path.resolve(process.cwd(), logDir);
 
@@ -25,7 +26,7 @@ async function clearOldLogs() {
         try {
             await fs.access(resolvedLogDir);
         } catch {
-            console.log('📁 Log directory does not exist, nothing to clean.');
+            logger.warn('Log directory does not exist, nothing to clean.');
             return;
         }
 
@@ -40,30 +41,24 @@ async function clearOldLogs() {
         for (const file of files) {
             if (file.endsWith('.log')) {
                 let fileDate = null;
-
-                // Format: YYYY-MM-DD.log
                 const yyyyMatch = file.match(/(\d{4}-\d{2}-\d{2})\.log$/);
-                if (yyyyMatch) {
-                    fileDate = new Date(yyyyMatch[1]);
-                }
+                if (yyyyMatch) fileDate = new Date(yyyyMatch[1]);
 
-                // Format: DD-MM-YYYY.log
                 const ddmmyyyyMatch = file.match(/(\d{2}-\d{2}-\d{4})\.log$/);
                 if (ddmmyyyyMatch && !fileDate) {
                     const [day, month, year] = ddmmyyyyMatch[1].split('-');
                     fileDate = new Date(`${year}-${month}-${day}`);
                 }
 
-                // Delete condition: force mode OR file is older than cutoff
                 const shouldDelete = forceDelete || (fileDate && fileDate < cutoffDate);
 
                 if (shouldDelete) {
                     try {
                         await fs.unlink(path.join(resolvedLogDir, file));
-                        console.log(`✅ Deleted: ${file}`);
+                        logger.info(`Deleted: ${file}`);
                         deletedCount++;
                     } catch (error) {
-                        console.log(`❌ Failed to delete: ${file} - ${error.message}`);
+                        logger.error(`Failed to delete: ${file}`, { error: error.message });
                         errorCount++;
                     }
                 } else {
@@ -72,20 +67,11 @@ async function clearOldLogs() {
             }
         }
 
-        console.log(`\n📊 Cleanup completed:`);
-        console.log(`   ✅ Deleted files: ${deletedCount}`);
-        console.log(`   📁 Kept files: ${keptCount}`);
-        console.log(`   ❌ Errors: ${errorCount}`);
-
-        if (!forceDelete) {
-            console.log(`   📅 Retention: ${MAX_LOG_DAYS} days`);
-        }
-
+        logger.info(`Cleanup completed: Deleted ${deletedCount}, Kept ${keptCount}, Errors ${errorCount}`);
     } catch (error) {
-        console.error('💥 Cleanup failed:', error.message);
-        process.exit(1);
+        logger.error('Cleanup failed', { error: error.message });
     }
 }
 
-// Run cleanup
+// Run the cleanup
 clearOldLogs();
