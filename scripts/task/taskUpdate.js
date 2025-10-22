@@ -12,7 +12,7 @@ try {
     // test for admin rights
     execSync("fsutil dirty query %systemdrive%", { stdio: "ignore" });
 } catch {
-    console.log("⚙️ Relaunching as Administrator (CMD)...");
+    console.log("Relaunching as Administrator (CMD)...");
 
     const __filename = fileURLToPath(import.meta.url);
     const args = process.argv.slice(2).join(" ");
