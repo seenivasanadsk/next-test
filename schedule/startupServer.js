@@ -1,4 +1,4 @@
-// commands\startupServer.js
+// schedule\startupServer.js
 
 import { schedule } from "../lib/scheduler.js";
 

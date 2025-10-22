@@ -1,4 +1,4 @@
-// commands\clearLogs.js
+// schedule\clearLogs.js
 
 import { schedule } from "../lib/scheduler.js";
 

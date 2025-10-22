@@ -34,18 +34,18 @@ const extraArgs = args.join(" ");
 loadEnvs({ isProduction });
 
 async function updateTasks() {
-    const commandsPath = path.join(process.cwd(), "commands");
-    const commandFiles = fs.readdirSync(commandsPath).filter(f => f.endsWith(".js"));
+    const schedulePath = path.join(process.cwd(), "schedule");
+    const scheduleFiles = fs.readdirSync(schedulePath).filter(f => f.endsWith(".js"));
 
     const configs = [];
 
-    for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
+    for (const file of scheduleFiles) {
+        const filePath = path.join(schedulePath, file);
         const fileUrl = pathToFileURL(filePath).href;
-        const commandModule = await import(fileUrl);
+        const scheduleModule = await import(fileUrl);
 
         const config = {
-            ...commandModule.default,
+            ...scheduleModule.default,
             isProduction,
             extraArgs,
         };

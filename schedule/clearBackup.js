@@ -1,4 +1,4 @@
-// commands\clearBackup.js
+// schedule\clearBackup.js
 
 import { schedule } from "../lib/scheduler.js";
 
