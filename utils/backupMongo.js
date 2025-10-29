@@ -5,6 +5,7 @@ import path from "path";
 import { getCurrentDateTime } from "./dateTime.js";
 import process from "process";
 import { loadEnvs } from "../lib/envConfig.js";
+import stringCase from "./stringCase.js";
 
 // Detect CLI (running outside Next.js)
 const isCLI = !process.env.NEXT_RUNTIME;
@@ -35,7 +36,7 @@ export async function backupMongo() {
     // Generate filename
     const { dateString, timeString } = getCurrentDateTime(timezone);
     const safeTime = timeString.replace(":", "-").replace(" ", "_"); // hh-mm_AM
-    const fileName = `mongo-backup-app-${appName}-db-${dbName}-env-${env}-date-${dateString}-time-${safeTime}.gz`;
+    const fileName = `mongo-backup-app-${stringCase.kebab(appName)}-db-${dbName}-env-${env}-date-${dateString}-time-${safeTime}.gz`;
 
     const fullPath = path.join(backupPath, fileName);
 

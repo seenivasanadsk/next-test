@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* --- Base color variables --- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-bg-light: #ffffff;
+  --color-fg-light: #171717;
+  --color-bg-dark: #0a0a0a;
+  --color-fg-dark: #ededed;
+
+  /* Default to light theme */
+  --background: var(--color-bg-light);
+  --foreground: var(--color-fg-light);
 }
 
+/* --- Tailwind inline theme variables --- */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
+/* --- System dark mode fallback --- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-bg-dark);
+    --foreground: var(--color-fg-dark);
   }
 }
 
+/* --- Manual theme overrides --- */
+html.light {
+  --background: var(--color-bg-light);
+  --foreground: var(--color-fg-light);
+}
+
+html.dark {
+  --background: var(--color-bg-dark);
+  --foreground: var(--color-fg-dark);
+}
+
+/* --- Apply to body --- */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background 0.3s, color 0.3s;
+  user-select: none;
 }
+
+input {
+  caret-color: auto;
+}
+
+/* Shake animation keyframes */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 60% { transform: translateX(-10px); }
+  15%, 45%, 75% { transform: translateX(10px);}
+}
+
+/* Apply to input with error */
+.animate-shake {
+  animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+  border-color: red;
+}
+
+/* Scrollbar*/
+/* Scrollbar - Neutral for both light and dark themes */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 165, 0, 0.6); /* semi-transparent amber/orange */
+  border-radius: 9999px; /* rounded */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 140, 0, 0.8); /* darker on hover */
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(128, 128, 128, 0.2); /* light transparent gray */
+  border-radius: 9999px;
+}
+
