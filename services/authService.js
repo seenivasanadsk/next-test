@@ -1,20 +1,26 @@
 // services/authService.js
 import { AppError } from '@/utils/error';
-import { findUserById } from '../dal/userDal';
+import { findUserById, updatePasswordById, updateUserLastAccess, updateUserLastLogin } from '../dal/userDal';
 import bcrypt from 'bcrypt';
 import { createSession, deleteSessionBySessionID, findSessionBySessionID } from '@/dal/sessionDal';
 import { getPort, getServerIp } from '@/lib/serverUtils';
+import { getUserById } from './userService';
+import { createOtpByUserId, deleteOtpByUserId, findOtpByUserId } from '@/dal/passwordResetDal';
+import sendOTPMail from '@/mails/trigger/sendOTPMail';
 
 export async function loginUser(userId, password) {
     const user = await findUserById(userId);
     if (!user) throw new AppError('User not found', 404);
 
+    if (!user.isActive) throw new AppError('User Restricted', 404);
+
     const isValid = await bcrypt.compare(password, user.hashed_password);
     if (!isValid) throw new AppError('Invalid password', 401);
 
     const session = await createSession({ userId: user._id, role: user.role })
+    updateUserLastLogin(userId)
 
-    return session;
+    return { session, user };
 }
 
 export async function logoutUser(sessionId) {
@@ -51,6 +57,8 @@ export async function verifySession(sessionId) {
     // Check user is Active
     if (!user.isActive) return { redirectTo: "/login", isValid: false, message: "User restricted" }
 
+    updateUserLastAccess(user._id)
+
     // ✅ Return safe data
     return {
         isValid: true,
@@ -61,4 +69,76 @@ export async function verifySession(sessionId) {
         serverIP: await getServerIp(),
         serverPort: await getPort()
     };
+}
+
+export async function generateOtp(userId, ttlSeconds) {
+    if (!userId) throw new AppError("User id Required", 404)
+    const user = await getUserById(userId)
+    const now = new Date();
+    const toMail = process.env.MAIL_ID
+
+    // Check if an OTP already exists and is not expired
+    const existingOtpRecord = await findOtpByUserId(userId);
+
+    if (existingOtpRecord) {
+        const createdAt = new Date(existingOtpRecord.createdAt); // ensure it's a Date
+        const diffSeconds = (now - createdAt) / 1000;
+
+        if (!ttlSeconds) {
+            const expiratrionMinutes = parseInt(process.env.OTP_EXPIRE_MINUTES || "1")
+            ttlSeconds = expiratrionMinutes * 60
+        }
+
+        // ✅ Expired if TTL passed OR record is already marked expired
+        if (diffSeconds > ttlSeconds) {
+            await deleteOtpByUserId(userId);
+        } else {
+            sendOTPMail(toMail, {
+                username: user.username,
+                otp: existingOtpRecord.OTP,
+                expiryMinutes: ttlSeconds / 60
+            })
+            return existingOtpRecord;
+        }
+    }
+
+    // Generate new OTP
+    const OTP = String(Math.floor(100000 + Math.random() * 900000));
+
+    // Create new OTP record in DB
+    const newRecord = await createOtpByUserId(userId, OTP);
+
+    sendOTPMail(toMail, {
+        username: user.username,
+        otp: newRecord.OTP,
+        expiryMinutes: ttlSeconds / 60
+    })
+
+    return newRecord;
+}
+
+export async function verifyOtpAndUpdatePassword(userId, inputOtp, newPassword, ttlSeconds) {
+    const now = new Date();
+
+    const record = await findOtpByUserId(userId);
+    if (!record) throw new AppError("OTP not generated, Refresh again", 401);
+
+    if (!ttlSeconds) {
+        const expiratrionMinutes = parseInt(process.env.OTP_EXPIRE_MINUTES || "1")
+        ttlSeconds = expiratrionMinutes * 60
+    }
+
+    // Check if OTP expired
+    const diffSeconds = (now - record.createdAt) / 1000;
+    if (diffSeconds > ttlSeconds) {
+        await deleteOtpByUserId(userId);
+        throw new AppError("OTP expired", 401);
+    }
+
+    if (record.OTP === inputOtp) {
+        // Mark as verified and optionally delete
+        return await updatePasswordById(userId, newPassword)
+    }
+
+    throw new AppError("Invalid OTP", 401);
 }

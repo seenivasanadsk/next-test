@@ -1,7 +1,7 @@
 // /utils/serialize.js
 import { ObjectId } from "mongodb";
 
-const hiddenFields = ["password", "token", "otp", "secret", "hashed_password"]
+const hiddenFields = ["password", "token", "OTP", "secret", "hashed_password"]
 
 /**
  * Serialize MongoDB document(s) for sending to client

@@ -81,6 +81,13 @@ async function ensureIndexes(db) {
         { expireAfterSeconds: 0 }
     );
 
+    // ✅ TTL index for passwordResets collection
+    const expiratrionMinutes = parseInt(process.env.OTP_EXPIRE_MINUTES || "1")
+    const expireAfterSeconds = expiratrionMinutes * 60
+    await db.collection("passwordResets").createIndex(
+        { expireAfterSeconds }
+    );
+
     logger.info("TTL index ensured for sessions collection");
 }
 
