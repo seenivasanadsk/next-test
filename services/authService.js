@@ -7,6 +7,8 @@ import { getPort, getServerIp } from '@/lib/serverUtils';
 import { getUserById } from './userService';
 import { createOtpByUserId, deleteOtpByUserId, findOtpByUserId } from '@/dal/passwordResetDal';
 import sendOTPMail from '@/mails/trigger/sendOTPMail';
+import { serializeId } from '@/utils/serialize';
+import logger from '@/lib/logger';
 
 export async function loginUser(userId, password) {
     const user = await findUserById(userId);
@@ -114,6 +116,8 @@ export async function generateOtp(userId, ttlSeconds) {
         expiryMinutes: ttlSeconds / 60
     })
 
+    logger.info(`OTP Generated for Username:${user.username}, UserID:${serializeId(user._id)}, Role: ${user.role}`)
+
     return newRecord;
 }
 
@@ -121,7 +125,7 @@ export async function verifyOtpAndUpdatePassword(userId, inputOtp, newPassword, 
     const now = new Date();
 
     const record = await findOtpByUserId(userId);
-    if (!record) throw new AppError("OTP not generated, Refresh again", 401);
+    if (!record) throw new AppError("OTP not generated, Try again", 401);
 
     if (!ttlSeconds) {
         const expiratrionMinutes = parseInt(process.env.OTP_EXPIRE_MINUTES || "1")
@@ -132,12 +136,15 @@ export async function verifyOtpAndUpdatePassword(userId, inputOtp, newPassword, 
     const diffSeconds = (now - record.createdAt) / 1000;
     if (diffSeconds > ttlSeconds) {
         await deleteOtpByUserId(userId);
-        throw new AppError("OTP expired", 401);
+        throw new AppError("OTP Expired", 401);
     }
 
     if (record.OTP === inputOtp) {
         // Mark as verified and optionally delete
-        return await updatePasswordById(userId, newPassword)
+        logger.info(`Password Resetted for UserID:${serializeId(userId)}`)
+        const res = await updatePasswordById(userId, newPassword)
+        if (res?.acknowledged)
+            return { userId }
     }
 
     throw new AppError("Invalid OTP", 401);

@@ -8,14 +8,15 @@ import CommonForm from "../CommonForm";
 import InputField from "../fields/InputField";
 import SelectField from "../fields/SelectField";
 import { resetPassword, sendOTP } from "@/actions/authAction";
+import { useActionHandler } from "@/context/ActionHandlerProvider";
 
 export default function PasswordResetForm({ users, config: parentConfig }) {
   const [showPassword, setShowPassword] = useState(false);
   const [pwdMismatch, setPwdMismatch] = useState(false);
-  const { addNotification } = useNotification();
   const [isOTPSent, setIsOTPSent] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { runAction } = useActionHandler();
   const [formData, setFormData] = useState({
     newPassword: "",
     confirmPassword: "",
@@ -25,28 +26,18 @@ export default function PasswordResetForm({ users, config: parentConfig }) {
 
   function handlePasswordReset() {
     startTransition(async () => {
-      const response = await resetPassword(formData);
-      if (response?.success) {
-        const metaMsg = response?.meta?.message;
-        metaMsg && addNotification(metaMsg, "success");
-        router.push("/");
-      } else {
-        const errorMsg = response?.error?.message;
-        errorMsg && addNotification(errorMsg, "error");
+      const data = await runAction(resetPassword, formData);
+      if (data?.userId) {
+        router.push("/login");
       }
     });
   }
 
   function handleSentOTP() {
     startTransition(async () => {
-      const response = await sendOTP(formData);
-      if (response?.success) {
-        const metaMsg = response?.meta?.message;
-        metaMsg && addNotification(metaMsg, "success");
+      const data = await runAction(sendOTP, formData);
+      if (data !== null) {
         setIsOTPSent(true);
-      } else {
-        const errorMsg = response?.error?.message;
-        errorMsg && addNotification(errorMsg, "error");
       }
     });
   }

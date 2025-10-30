@@ -68,7 +68,7 @@ export async function sendOTP(payload) {
     try {
         const { userId } = unserializeDoc(payload)
         const data = await generateOtp(userId)
-        return commonSuccess(data, { message: "OTP sent, check Mail" })
+        return commonSuccess(data, "OTP sent, check Mail")
     } catch (error) {
         return commonError(error)
     }
@@ -78,7 +78,7 @@ export async function resetPassword(payload) {
     try {
         const { userId, otp, newPassword } = unserializeDoc(payload)
         const data = await verifyOtpAndUpdatePassword(userId, otp, newPassword)
-        return commonSuccess(data, { message: "Password Reset" })
+        return commonSuccess(data, "Password Reset")
     } catch (error) {
         return commonError(error)
     }
