@@ -1,15 +1,117 @@
 "use client";
+import {
+  Home,
+  LogOut,
+  Monitor,
+  Moon,
+  PanelRightClose,
+  Settings,
+  Sun,
+  User,
+} from "lucide-react";
 import { useSession } from "@/context/SessionProvider";
+import SidebarHeaderButton from "./SidebarHeaderButton";
+import { useTheme } from "@/context/ThemeProvider";
+import { useRouter } from "next/navigation";
+import { startTransition } from "react";
+import { useActionHandler } from "@/context/ActionHandlerProvider";
+import { logoutAction } from "@/actions/authAction";
+import { useHotkeys } from "react-hotkeys-hook";
 
-// components\Sidebar.jsx
-export default function Sidebar() {
+export default function Sidebar({ toggleSidebar }) {
+  const router = useRouter();
   const { session } = useSession();
+  const { runAction } = useActionHandler();
+  const { theme, setTheme, themes } = useTheme();
+
+  // -------------------------------
+  // Core Functions
+  // -------------------------------
+  function toggleTheme(e) {
+    e?.preventDefault();
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+  }
+
+  function logoutUser(e) {
+    e?.preventDefault();
+    startTransition(async () => {
+      const data = await runAction(logoutAction);
+      if (data?._id) router.refresh();
+    });
+  }
+
+  const navigateHome = () => router.push("/");
+  const navigateProfile = () => router.push("/profile");
+  const navigateSettings = () => router.push("/settings");
+
+  // -------------------------------
+  // Keyboard Shortcuts
+  // -------------------------------
+  useHotkeys("alt+d", toggleTheme);
+  useHotkeys("alt+h", navigateHome);
+  useHotkeys("alt+s", navigateSettings);
+  useHotkeys("alt+l", logoutUser);
+  useHotkeys("alt+p", navigateProfile);
+  useHotkeys("alt+x", toggleSidebar);
+
+  // -------------------------------
+  // Sidebar Buttons Config
+  // -------------------------------
+  const buttons = [
+    {
+      title: "Toggle Theme (Alt+D)",
+      onClick: toggleTheme,
+      icon:
+        theme === "light" ? <Sun /> : theme === "dark" ? <Moon /> : <Monitor />,
+    },
+    {
+      title: "Go to Home (Alt+H)",
+      onClick: navigateHome,
+      icon: <Home />,
+    },
+    {
+      title: "Go to Settings (Alt+S)",
+      onClick: navigateSettings,
+      icon: <Settings />,
+    },
+    {
+      title: "Logout (Alt+L)",
+      onClick: logoutUser,
+      icon: <LogOut />,
+    },
+    {
+      title: "Profile (Alt+P)",
+      onClick: navigateProfile,
+      icon: <User />,
+    },
+    {
+      title: "Close Sidebar (Alt+X)",
+      onClick: toggleSidebar,
+      icon: <PanelRightClose />,
+    },
+  ];
+
+  // -------------------------------
+  // Render
+  // -------------------------------
   return (
     <div className="border-l-2 w-full h-full flex flex-col bg-gray-50 dark:bg-gray-950 shadow-2xl">
       {/* Nav Icons */}
-      <div className="flex gap-2 p-2 flex-wrap border-b-2">Test</div>
+      <div className="flex gap-2 p-2 flex-wrap border-b-2">
+        {buttons.map((btn, idx) => (
+          <SidebarHeaderButton
+            key={idx}
+            onClick={btn.onClick}
+            title={btn.title}
+          >
+            {btn.icon}
+          </SidebarHeaderButton>
+        ))}
+      </div>
 
-      {/* Nav Shortcuts */}
+      {/* Spacer */}
       <div className="flex-1"></div>
 
       {/* Sidebar Footer */}
@@ -17,7 +119,7 @@ export default function Sidebar() {
         <div className="select-all">{`http://${session.serverIP}:${session.serverPort}`}</div>
         <div className="capitalize">Env: {process.env.NODE_ENV}</div>
         <div className="capitalize">
-          User: {session.username || "loged out"}
+          User: {session.username || "logged out"}
         </div>
       </div>
     </div>

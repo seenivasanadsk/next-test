@@ -12,6 +12,10 @@ export default function ProtectedShell({ children }) {
   const { session } = useSession();
   const { runAction } = useActionHandler();
 
+  function toggleSidebar() {
+    setIsSidebarOpen(!isSidebarOpen);
+  }
+
   useEffect(() => {
     if (session && !session.isValid) {
       startTransition(() => {
@@ -39,7 +43,7 @@ export default function ProtectedShell({ children }) {
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <Sidebar />
+        <Sidebar toggleSidebar={toggleSidebar} />
       </aside>
     </div>
   );
