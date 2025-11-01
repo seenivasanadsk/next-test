@@ -6,14 +6,33 @@ import Sidebar from "./Sidebar";
 import { useSession } from "@/context/SessionProvider";
 import { useActionHandler } from "@/context/ActionHandlerProvider";
 import { logoutAction } from "@/actions/authAction";
+import Button from "./Button";
+import { MenuIcon } from "lucide-react";
 
 export default function ProtectedShell({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { session } = useSession();
   const { runAction } = useActionHandler();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window === "undefined") return true; // SSR safety
+    try {
+      const collapsed = localStorage.getItem("sidebarCollapsed");
+      // stored as "true" or "false"
+      return collapsed === "true" ? false : true;
+    } catch {
+      return true;
+    }
+  });
 
+  // Persist sidebarCollapsed on toggle
   function toggleSidebar() {
-    setIsSidebarOpen(!isSidebarOpen);
+    setIsSidebarOpen((prev) => {
+      const newValue = !prev;
+      try {
+        // collapsed = opposite of open
+        localStorage.setItem("sidebarCollapsed", (!newValue).toString());
+      } catch {}
+      return newValue;
+    });
   }
 
   useEffect(() => {
@@ -43,6 +62,19 @@ export default function ProtectedShell({ children }) {
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
+        {!isSidebarOpen && (
+          <div className="absolute -left-11 bottom-2">
+            <Button
+              variant="secondary"
+              radius="full"
+              className="p-2"
+              onClick={toggleSidebar}
+              title="Open Sidebar (Alt+X)"
+            >
+              <MenuIcon size={20} />
+            </Button>
+          </div>
+        )}
         <Sidebar toggleSidebar={toggleSidebar} />
       </aside>
     </div>

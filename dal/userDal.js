@@ -45,3 +45,11 @@ export async function updateUserLastAccess(userId) {
         .updateOne({ _id: userId }, { $set: { lastAccess: new Date() } });
     return result
 }
+
+export async function updateUserById(updates, id) {
+    const db = await getDb();
+    const result = await db
+        .collection('users')
+        .updateOne({ _id: id }, { $set: updates });
+    return result
+}
