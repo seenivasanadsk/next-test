@@ -28,7 +28,7 @@ export default function InputField({
     >
       {prefix && <InputPrefix onClick={onPrefixClick}>{prefix}</InputPrefix>}
       <input
-        className="outline-none w-full px-2 py-1"
+        className="outline-none w-full px-2 py-1 placeholder-gray-500 focus:placeholder-amber-800 focus:dark:placeholder-amber-200"
         disabled={disabled}
         readOnly={disabled}
         type={type}

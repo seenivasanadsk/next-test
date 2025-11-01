@@ -16,8 +16,8 @@ export default function SelectField({
   onPrefixClick,
   suffix,
   onSuffixClick,
-  optionLabel,
-  optionValue,
+  optionLabel = "title",
+  optionValue = "value",
   ...props
 }) {
   /* -------------------- State -------------------- */
@@ -135,7 +135,7 @@ export default function SelectField({
         <input
           type="text"
           value={search}
-          className="outline-none w-full px-2 py-1"
+          className="outline-none w-full px-2 py-1 placeholder-gray-500 focus:placeholder-amber-800 focus:dark:placeholder-amber-200"
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
