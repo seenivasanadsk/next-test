@@ -9,6 +9,7 @@ import InputField from "../fields/InputField";
 import SelectField from "../fields/SelectField";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSettings } from "@/context/SettingsProvider";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function LoginForm() {
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({ userId: "", password: "" });
   const { runAction } = useActionHandler();
+  const { settings, updateSetting } = useSettings();
+  const { lostUserId = null } = settings;
 
   function handleFormData(name, value) {
     setFormData((prev) => {
@@ -31,7 +34,7 @@ export default function LoginForm() {
     startTransition(async () => {
       const data = await runAction(loginAction, formData);
       if (data) {
-        localStorage.setItem("lostUserId", formData.userId);
+        updateSetting("lostUserId", formData.userId);
         router.push("/");
       } else {
         showError(true);
@@ -46,7 +49,7 @@ export default function LoginForm() {
       const data = await runAction(getUserOptionsAction, { silent: true });
       if (data) {
         setUsers(data);
-        const savedUserId = localStorage.getItem("lostUserId");
+        const savedUserId = lostUserId;
         if (savedUserId) handleFormData("userId", savedUserId);
       }
     });
