@@ -9,7 +9,6 @@ export default async function UsersPage({ searchParams }) {
   const parsedData = normalizeData(params);
   let users = await getUsersForDataTable(parsedData);
   users = serializeDoc(users);
-  console.log(users);
 
   const config = {
     title: "Users",
@@ -18,14 +17,12 @@ export default async function UsersPage({ searchParams }) {
     items: users.items,
     headers: users.headers,
     filterable: users.filterable,
-    editURL: (id) => "/users?open-form=true&edit-id=" + id,
-    addURL: "/users?open-form=true",
     total: users.total,
     filtered: users.filtered,
     search: parsedData.search || "",
     page: users.page,
     itemsPerPage: users.itemsPerPage,
-    deleteAction: deleteUserAction,
+    entityType: "users",
   };
   return (
     <>

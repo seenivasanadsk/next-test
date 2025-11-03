@@ -2,18 +2,21 @@ import Link from "next/link";
 import TableHead from "./TableHead";
 import TableDeleteButton from "./TableDeleteAction";
 import display from "@/utils/display";
+import cn from "@/utils/cn";
 
 export default function Table({ config }) {
-  const { items, headers, editURL, deleteAction } = config;
+  const { items, headers, editURL, deleteAction, loading } = config;
   return (
-    <table className="min-w-full border-collapse">
+    <table
+      className={cn("min-w-full border-collapse", loading && "opacity-50")}
+    >
       <thead className="sticky top-0 bg-amber-100 dark:bg-amber-900 text-amber-900 dark:text-amber-100 z-10">
         <tr className="uppercase">
           {headers.map((header, i) => (
             <TableHead key={i} header={header} />
           ))}
           <th className="border-b border-amber-300 dark:border-amber-950 px-3 py-2 text-center">
-            Edit
+            Action
           </th>
         </tr>
       </thead>
@@ -42,7 +45,7 @@ export default function Table({ config }) {
               ))}
               <td className="px-2 py-1 text-center">
                 <Link
-                  href={editURL ? editURL(item._id) : "#"}
+                  href={editURL ? editURL + item._id : "#"}
                   scroll={false}
                   title="Edit"
                   className="inline-block cursor-pointer rounded-full p-1 hover:bg-amber-200 dark:hover:bg-amber-700 transition"

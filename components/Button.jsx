@@ -26,7 +26,7 @@ export default function Button({
     secondary:
       "bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-500 focus:outline-gray-600 dark:focus:outline-gray-400",
     accent:
-      "bg-amber-600 text-white hover:bg-amber-700 active:bg-amber-800 dark:bg-amber-500 dark:text-white dark:hover:bg-amber-600 dark:active:bg-amber-700 focus:outline-amber-600 dark:focus:outline-amber-400",
+      "bg-amber-600 text-white hover:bg-amber-700 active:bg-amber-800 dark:bg-amber-600 dark:text-white dark:hover:bg-amber-700 dark:active:bg-amber-800 focus:outline-amber-600 dark:focus:outline-amber-500",
     danger:
       "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 dark:bg-red-500 dark:hover:bg-red-600 dark:active:bg-red-700 focus:outline-red-600 dark:focus:outline-red-400",
     success:

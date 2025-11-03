@@ -66,7 +66,7 @@ export default function TableHead({ header }) {
     <th
       onClick={handleSortable}
       className={cn(
-        "border-b border-amber-300 dark:border-amber-950 px-3 py-2 text-left select-none",
+        "border-b border-amber-300 dark:border-amber-950 px-3 py-2 text-left select-none whitespace-nowrap",
         header.sortable &&
           "cursor-pointer hover:bg-amber-200 dark:hover:bg-amber-700"
       )}

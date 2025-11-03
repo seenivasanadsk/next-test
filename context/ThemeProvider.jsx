@@ -1,14 +1,11 @@
-// context/ThemeProvider.js
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Define the theme types
 const themes = ["light", "dark", "system"];
-
-// Create the context
 const ThemeContext = createContext();
 
+// --- helper functions ---
 const getSystemTheme = () => {
   if (typeof window !== "undefined" && window.matchMedia) {
     return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -18,31 +15,40 @@ const getSystemTheme = () => {
   return "light";
 };
 
-export const ThemeProvider = ({ children }) => {
-  const [theme, setThemeState] = useState(() => {
-    if (typeof window !== "undefined") {
-      const storedTheme = localStorage.getItem("theme");
-      return themes.includes(storedTheme) ? storedTheme : "system";
-    }
+// Get initial theme synchronously (avoids hydration mismatch)
+const getInitialTheme = () => {
+  if (typeof window === "undefined") return "system";
+  try {
+    const stored = localStorage.getItem("theme");
+    return themes.includes(stored) ? stored : "system";
+  } catch {
     return "system";
-  });
+  }
+};
 
-  // State to track if the component has mounted
-  const [mounted, setMounted] = useState(false);
+export const ThemeProvider = ({ children }) => {
+  // Initialize state from localStorage immediately (same as themeInitializerScript)
+  const [theme, setThemeState] = useState(getInitialTheme);
+  const [hydrated, setHydrated] = useState(false);
 
   const appliedTheme = theme === "system" ? getSystemTheme() : theme;
 
+  // Mark as hydrated after mount
   useEffect(() => {
-    const root = window.document.documentElement;
+    setHydrated(true);
+  }, []);
 
-    root.classList.remove(...themes.filter((t) => t !== "system"));
+  // Apply theme to DOM *after* hydration or when user toggles
+  useEffect(() => {
+    if (!hydrated) return; // skip initial load — already handled by themeInitializerScript
+
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
     root.classList.add(appliedTheme);
-
     localStorage.setItem("theme", theme);
+  }, [theme, appliedTheme, hydrated]);
 
-    setMounted(true);
-  }, [theme, appliedTheme]);
-
+  // theme setter with validation
   const setTheme = (newTheme) => {
     if (themes.includes(newTheme)) {
       setThemeState(newTheme);
@@ -51,16 +57,16 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-  const contextValue = {
-    theme,
-    appliedTheme,
-    setTheme,
-    themes,
-    mounted,
-  };
-
   return (
-    <ThemeContext.Provider value={contextValue}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        appliedTheme,
+        setTheme,
+        themes,
+        hydrated,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
@@ -68,8 +74,6 @@ export const ThemeProvider = ({ children }) => {
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
+  if (!context) throw new Error("useTheme must be used within a ThemeProvider");
   return context;
 };

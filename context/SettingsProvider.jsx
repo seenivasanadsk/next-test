@@ -1,39 +1,36 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 
 const defaultSettings = {
-  isSidebarOpen: false, // default state
+  isSidebarOpen: false,
 };
 
 const SettingsContext = createContext({
   settings: defaultSettings,
-  updateSetting: (key, value) => {},
+  updateSetting: () => {},
+  hydrated: false,
 });
 
 export function SettingsProvider({ children }) {
-  // ---- Load from localStorage synchronously ----
-  let savedSettings = {};
-  if (typeof window !== "undefined") {
+  const [settings, setSettings] = useState(defaultSettings);
+  const [hydrated, setHydrated] = useState(false);
+
+  // ✅ Load settings synchronously *before paint* to prevent flicker
+  useLayoutEffect(() => {
     try {
       const raw = localStorage.getItem("settings");
       if (raw) {
-        savedSettings = JSON.parse(raw, (_, value) => {
-          if (value === "true") return true;
-          if (value === "false") return false;
-          return value;
-        });
+        const saved = JSON.parse(raw);
+        setSettings((prev) => ({ ...prev, ...saved }));
       }
     } catch (err) {
       console.warn("Error reading settings from localStorage:", err);
+    } finally {
+      // Mark hydration complete after a tick (ensures no flicker)
+      requestAnimationFrame(() => setHydrated(true));
     }
-  }
-
-  // ---- Initialize directly with saved values ----
-  const [settings, setSettings] = useState({
-    ...defaultSettings,
-    ...savedSettings,
-  });
+  }, []);
 
   const updateSetting = (key, value) => {
     setSettings((prev) => {
@@ -44,7 +41,7 @@ export function SettingsProvider({ children }) {
   };
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSetting }}>
+    <SettingsContext.Provider value={{ settings, updateSetting, hydrated }}>
       {children}
     </SettingsContext.Provider>
   );

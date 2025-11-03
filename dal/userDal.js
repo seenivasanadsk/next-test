@@ -9,7 +9,7 @@ function getUserTableHeaders() {
       title: "Username",
       valuePath: "username",
       sortable: true,
-      filterable: "Off",
+      filterable: null,
       searchable: true,
     },
     { title: "Role", valuePath: "role", sortable: true, filterable: "Select" },
@@ -18,7 +18,6 @@ function getUserTableHeaders() {
       valuePath: "lastLogin",
       sortable: true,
       filterable: "Date",
-      searchable: true,
       display: "dateTime",
     },
     {
@@ -26,7 +25,6 @@ function getUserTableHeaders() {
       valuePath: "lastAccess",
       sortable: true,
       filterable: "Date",
-      searchable: true,
       display: "dateTime",
     },
     {
@@ -34,7 +32,6 @@ function getUserTableHeaders() {
       valuePath: "lastPasswordReset",
       sortable: true,
       filterable: "Date",
-      searchable: true,
       display: "dateTime",
     },
   ];

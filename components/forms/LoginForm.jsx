@@ -1,4 +1,5 @@
 "use client";
+
 import { useRef, useState, useEffect, useTransition } from "react";
 import { Eye, EyeOff, KeyRound, LogIn, User } from "lucide-react";
 import { loginAction } from "@/actions/authAction";
@@ -18,10 +19,13 @@ export default function LoginForm() {
   const [isPending, startTransition] = useTransition();
   const [error, showError] = useState(false);
   const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({ userId: "", password: "" });
   const { runAction } = useActionHandler();
-  const { settings, updateSetting } = useSettings();
-  const { lostUserId = null } = settings;
+  const { settings, updateSetting, hydrated } = useSettings();
+
+  const [formData, setFormData] = useState({
+    userId: "",
+    password: "",
+  });
 
   function handleFormData(name, value) {
     setFormData((prev) => {
@@ -43,17 +47,19 @@ export default function LoginForm() {
     });
   }
 
-  // Fetch users
+  // Fetch users and apply saved userId after hydration
   useEffect(() => {
+    if (!hydrated) return; // wait until settings loaded
+
     startTransition(async () => {
       const data = await runAction(getUserOptionsAction, { silent: true });
       if (data) {
         setUsers(data);
-        const savedUserId = lostUserId;
+        const savedUserId = settings?.lostUserId || "";
         if (savedUserId) handleFormData("userId", savedUserId);
       }
     });
-  }, []);
+  }, [hydrated]);
 
   const config = {
     title: "Login",
@@ -64,6 +70,8 @@ export default function LoginForm() {
     submitText: "Login",
     submitPrefix: <LogIn />,
   };
+
+  if (!hydrated) return null; // avoids flicker completely
 
   return (
     <CommonForm config={config}>
@@ -76,6 +84,7 @@ export default function LoginForm() {
         optionLabel="username"
         optionValue="_id"
       />
+
       <InputField
         className={error ? "animate-shake" : ""}
         prefix={<KeyRound />}
@@ -88,6 +97,7 @@ export default function LoginForm() {
         onValue={(value) => handleFormData("password", value)}
         autoFocus
       />
+
       <Link className="text-blue-500 dark:text-blue-300" href="/reset-password">
         Forget Password?
       </Link>

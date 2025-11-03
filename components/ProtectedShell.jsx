@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useEffect } from "react";
+import { startTransition, useEffect, useRef } from "react";
 import cn from "@/utils/cn";
 import Sidebar from "./Sidebar";
 import { useSession } from "@/context/SessionProvider";
@@ -13,14 +13,27 @@ import { useSettings } from "@/context/SettingsProvider";
 export default function ProtectedShell({ children }) {
   const { session } = useSession();
   const { runAction } = useActionHandler();
-  const { settings, updateSetting } = useSettings();
+  const { settings, updateSetting, hydrated } = useSettings();
   const { isSidebarOpen = false } = settings;
+  const hasMounted = useRef(false);
 
-  function toggleSidebar() {
-    const newValue = !isSidebarOpen;
-    updateSetting("isSidebarOpen", newValue);
+  function toggleSidebar(e) {
+    e?.preventDefault();
+    updateSetting("isSidebarOpen", !isSidebarOpen);
   }
 
+  // 🧩 Prevent transition on first mount
+  useEffect(() => {
+    if (!hydrated) return;
+    const body = document.body;
+    if (!hasMounted.current) {
+      body.classList.add("no-transitions");
+      setTimeout(() => body.classList.remove("no-transitions"), 50);
+      hasMounted.current = true;
+    }
+  }, [hydrated]);
+
+  // 🚨 Handle invalid sessions
   useEffect(() => {
     if (session && !session.isValid) {
       startTransition(() => {
@@ -34,7 +47,7 @@ export default function ProtectedShell({ children }) {
       <main
         className={cn(
           "flex-1 transition-all duration-250 ease-in-out",
-          isSidebarOpen ? "mr-[180px]" : "mr-0"
+          hydrated ? (isSidebarOpen ? "mr-[180px]" : "mr-0") : "mr-0"
         )}
       >
         <div className="p-6 h-full">{children}</div>
@@ -42,11 +55,15 @@ export default function ProtectedShell({ children }) {
 
       <aside
         className={cn(
-          "fixed right-0 top-0 h-full w-[180px] transition-transform duration-250 ease-in-out",
-          isSidebarOpen ? "translate-x-0" : "translate-x-full"
+          "fixed right-0 top-0 h-full w-[180px] z-10 transition-transform duration-250 ease-in-out",
+          hydrated
+            ? isSidebarOpen
+              ? "translate-x-0"
+              : "translate-x-full"
+            : "translate-x-full"
         )}
       >
-        {!isSidebarOpen && (
+        {hydrated && !isSidebarOpen && (
           <div className="absolute -left-11 bottom-2">
             <Button
               variant="secondary"

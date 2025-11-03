@@ -40,18 +40,10 @@ export default function Pagination({
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-      if (page <= 4) {
-        pages.push(1, 2, 3, 4, 5, "...", totalPages);
-      } else if (page >= totalPages - 3) {
-        pages.push(
-          1,
-          "...",
-          totalPages - 4,
-          totalPages - 3,
-          totalPages - 2,
-          totalPages - 1,
-          totalPages
-        );
+      if (page <= 2) {
+        pages.push(1, 2, 3, "...", totalPages);
+      } else if (page >= totalPages - 1) {
+        pages.push(1, "...", totalPages - 2, totalPages - 1, totalPages);
       } else {
         pages.push(1, "...", page - 1, page, page + 1, "...", totalPages);
       }
@@ -65,14 +57,14 @@ export default function Pagination({
   const pageSizeOptions = [25, 50, 100, 150, 200];
 
   return (
-    <div className="flex items-center gap-2 mt-4 justify-between">
+    <div className="flex items-center gap-2 mt-4 justify-between flex-col md:flex-row">
       {/* Page Numbers */}
       <div className="flex gap-1">
         <button
           onClick={() => updateParams(page - 1, pageSize)}
           disabled={page === 1}
           className={cn(
-            "px-3 py-1 rounded border-2",
+            "px-1 py-0 rounded border-2",
             page === 1
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-amber-200 dark:hover:bg-amber-700"
@@ -83,7 +75,7 @@ export default function Pagination({
 
         {pageNumbers.map((p, idx) =>
           p === "..." ? (
-            <span key={idx} className="px-3 py-1">
+            <span key={idx} className="px-1 py-0">
               ...
             </span>
           ) : (
@@ -91,7 +83,7 @@ export default function Pagination({
               key={idx}
               onClick={() => updateParams(p, pageSize)}
               className={cn(
-                "px-3 py-1 rounded border-2",
+                "px-1 py-0 rounded border-2",
                 p === page
                   ? "bg-amber-600 text-white border-amber-800 dark:border-amber-200 dark:bg-amber-500"
                   : "hover:bg-amber-200 dark:hover:bg-amber-700"
@@ -106,7 +98,7 @@ export default function Pagination({
           onClick={() => updateParams(page + 1, pageSize)}
           disabled={page === totalPages}
           className={cn(
-            "px-3 py-1 rounded border-2",
+            "px-1 py-0 rounded border-2",
             page === totalPages
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-amber-200 dark:hover:bg-amber-700"
@@ -126,7 +118,7 @@ export default function Pagination({
       </div>
 
       {/* Items Per Page Selector */}
-      <div className="flex items-center gap-2 mt-2">
+      <div className="flex items-center gap-2">
         <span>Per Page:</span>
         <select
           value={pageSize}

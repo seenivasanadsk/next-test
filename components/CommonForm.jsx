@@ -66,6 +66,7 @@ export default function CommonForm({ children, config: parentConfig }) {
           <Button
             variant="secondary"
             href={config.cancel}
+            onClick={config.cancelAction}
             prefix={<ArrowLeft />}
           >
             Cancel
