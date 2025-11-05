@@ -30,7 +30,7 @@ const commands = {
     desc: "Database management utilities",
   },
   backup: {
-    file: "analyzeNextRoutes.js",
+    file: "dbBackup.js",
     desc: "Backup your database and configurations",
   },
 };

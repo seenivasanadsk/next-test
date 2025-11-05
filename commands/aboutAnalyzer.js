@@ -45,8 +45,8 @@ function isPrivateIp(ip) {
   );
 }
 
-export default function aboutSimple(projectRootArg) {
-  const projectRoot = projectRootArg || process.cwd();
+export default function aboutSimple() {
+  const projectRoot = process.cwd();
 
   const osType = os.type(); // e.g. 'Windows_NT', 'Linux', 'Darwin'
   const osPlatform = os.platform(); // 'win32','linux','darwin'

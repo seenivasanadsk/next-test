@@ -2,7 +2,7 @@
  * 🔹 Convert string values to proper JS types.
  * Also safely detects and parses JSON strings.
  */
-function autoCast(value) {
+export function autoCast(value) {
   if (typeof value !== "string") return value;
 
   const trimmed = value.trim();

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import formatText from "./helpers/formatText.js";
+import commandConfig from "../config/command.js";
 
 const IGNORE_DIRS = new Set([
   "node_modules",
@@ -51,11 +52,21 @@ function extractServerActions(code) {
   return actions;
 }
 
-export default function listServerActions(
-  projectRootArg,
-  targets = ["actions"]
-) {
-  const projectRoot = projectRootArg || process.cwd();
+export default function listServerActions({ command, sub, flags, args }) {
+  const projectRoot = process.cwd();
+  const config = commandConfig?.[command] || {};
+
+  if (!config?.analyzePath) {
+    console.log(
+      formatText("Config missing for this command", { color: "red" })
+    );
+    console.log(
+      formatText("Check these file config/command.js", { color: "yellow" })
+    );
+    process.exit(0);
+  }
+
+  const targets = config.analyzePath;
 
   if (typeof projectRoot !== "string") {
     throw new TypeError(

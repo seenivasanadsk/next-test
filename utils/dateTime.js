@@ -115,23 +115,69 @@ function applyTimeToDate(dateObj, timeInput) {
 /**
  * Format date object to standard strings
  */
-function formatDateTime(dateObj) {
-  const day = String(dateObj.getDate()).padStart(2, "0");
-  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+function formatDateTime(dateObj = new Date(), pattern = "dd-mm-yyyy hh:ii AA") {
+  if (!(dateObj instanceof Date)) {
+    dateObj = new Date(dateObj);
+  }
+
+  const day = dateObj.getDate();
+  const month = dateObj.getMonth() + 1;
   const year = dateObj.getFullYear();
+  const hours24 = dateObj.getHours();
+  const minutes = dateObj.getMinutes();
+  const seconds = dateObj.getSeconds();
 
-  let hours = dateObj.getHours();
-  const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+  const daysShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const daysFull = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
-  // Convert to 12-hour format
-  const period = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12;
-  const hoursFormatted = String(hours).padStart(2, "0");
+  const periodLower = hours24 >= 12 ? "pm" : "am";
+  const periodCap = periodLower.toUpperCase();
+  const periodTitle =
+    periodLower.charAt(0).toUpperCase() + periodLower.slice(1);
+
+  const hours12 = hours24 % 12 || 12;
+
+  const map = {
+    dd: String(day).padStart(2, "0"),
+    d: String(day),
+    mm: String(month).padStart(2, "0"),
+    m: String(month),
+    yyyy: String(year),
+    yy: String(year).slice(-2),
+    D: daysShort[dateObj.getDay()],
+    DD: daysFull[dateObj.getDay()],
+    HH: String(hours24).padStart(2, "0"),
+    H: String(hours24),
+    hh: String(hours12).padStart(2, "0"),
+    h: String(hours12),
+    ii: String(minutes).padStart(2, "0"),
+    i: String(minutes),
+    ss: String(seconds).padStart(2, "0"),
+    s: String(seconds),
+    aa: periodLower,
+    Aa: periodTitle,
+    AA: periodCap,
+  };
+
+  // Replace all placeholders
+  let formatted = pattern;
+  for (const [key, val] of Object.entries(map)) {
+    formatted = formatted.replace(new RegExp(key, "g"), val);
+  }
 
   return {
-    dateString: `${day}-${month}-${year}`,
-    timeString: `${hoursFormatted}:${minutes} ${period}`,
-    timeStamp: `${day}-${month}-${year} ${hoursFormatted}:${minutes} ${period}`,
+    dateString: `${map.dd}-${map.mm}-${map.yyyy}`,
+    timeString: `${map.hh}:${map.ii} ${map.AA}`,
+    timeStamp: `${map.dd}-${map.mm}-${map.yyyy} ${map.hh}:${map.ii} ${map.AA}`,
+    formatted: formatted,
     dateObject: dateObj,
   };
 }
