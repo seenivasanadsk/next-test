@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "/login",
+    "/reset-password",
+    "/",
+    "/profile",
+    "/settings",
+    "/users"
+  ],
+  "apis": [],
+  "serverActions": [
+    {
+      "file": "C:/Users/Admin/Desktop/New folder/next-test/actions/authAction.js",
+      "functions": [
+        "loginAction",
+        "logoutAction",
+        "sendOTP",
+        "resetPassword"
+      ]
+    },
+    {
+      "file": "C:/Users/Admin/Desktop/New folder/next-test/actions/userAction.js",
+      "functions": [
+        "getUserOptionsAction",
+        "updateUserAction",
+        "deleteUserAction"
+      ]
+    }
+  ],
+  "clientComponents": [
+    "C:/Users/Admin/Desktop/New folder/next-test/app/(protected)/settings/page.jsx",
+    "C:/Users/Admin/Desktop/New folder/next-test/app/global-error.jsx",
+    "C:/Users/Admin/Desktop/New folder/next-test/app/loading.jsx",
+    "C:/Users/Admin/Desktop/New folder/next-test/app/not-found.jsx"
+  ]
+}

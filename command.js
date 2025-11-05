@@ -31,11 +31,15 @@ async function runTasks() {
   });
 
   for (let i = 1; i <= totalTasks; i++) {
-    await new Promise((r) => setTimeout(r, 1000)); // simulate async work
+    await new Promise((r) => setTimeout(r, 100)); // simulate async work
     progress.update(i);
   }
 
   console.log("✅ All tasks complete!");
+
+  console.log("\x1b[1mBold Text\x1b[0m");
+  console.log("\x1b[1m\x1b[97mBright White Bold Text\x1b[0m");
+
 }
 
 runTasks();
