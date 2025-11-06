@@ -177,7 +177,7 @@ export default async function makeSeeding({ command = "seed", sub = [], flags = 
     }
 
     const dbName = flags.db || config.dbName || null;
-    const dbURI = flags.dbURI || config.dbURI || process.env.MONGO_URI || null;
+    const dbURI = flags.dbURI || config.dbURI || null;
     const otpExpiryMinutes = config.otpExpiryMinutes || 5;
 
     let subCommand = "seed";

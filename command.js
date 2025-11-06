@@ -33,6 +33,14 @@ const commands = {
     file: "dbBackup.js",
     desc: "Backup your database and configurations",
   },
+  server: {
+    file: "serverUtils.js",
+    desc: "Manage server operations like start, stop, clean, build in the background",
+  },
+  log: {
+    file: "logManager.js",
+    desc: "Manage application logs",
+  },
 };
 
 bootCommand(commands);

@@ -33,5 +33,13 @@ export default {
   db: {
     dbName: common.dbName,
     dbURI: common.dbURI,
-  }
+  },
+  server: {
+    port: 2000
+  },
+  log: {
+    logDir: "./logs",
+    maxLogDays: 7,
+    lines: 10
+  },
 };

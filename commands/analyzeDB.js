@@ -81,7 +81,7 @@ export default async function analyzeDB({ command, sub = [], flags = {} }) {
 
     // Flags take priority
     const dbName = flags.db || config.dbName;
-    const dbURI = flags.dbURI || config.dbURI || process.env.MONGO_URI;
+    const dbURI = flags.dbURI || config.dbURI || null;
 
     // Validation
     if (!dbName) {
