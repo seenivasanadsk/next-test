@@ -185,8 +185,8 @@ function formatDateTime(dateObj = new Date(), pattern = "dd-mm-yyyy hh:ii AA") {
 /**
  * Get current date-time (always returns formatted object)
  */
-export function getCurrentDateTime(timezone = DEFAULT_TIMEZONE) {
-  return formatDateTime(new Date());
+export function getCurrentDateTime(pattern = "dd-mm-yyyy hh:ii AA", timezone = DEFAULT_TIMEZONE) {
+  return formatDateTime(new Date(), pattern);
 }
 
 /**
@@ -216,11 +216,11 @@ export function convertToTime(input) {
 /**
  * Parse existing Date object to formatted strings (replaces old parseDateTime)
  */
-export function formatDateObject(dateObject = new Date()) {
+export function formatDateObject(dateObject = new Date(), pattern = "dd-mm-yyyy hh:ii AA") {
   if (!(dateObject instanceof Date) || isNaN(dateObject.getTime())) {
     return getCurrentDateTime();
   }
-  return formatDateTime(dateObject);
+  return formatDateTime(dateObject, pattern);
 }
 
 /**

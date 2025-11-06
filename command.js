@@ -22,11 +22,11 @@ const commands = {
     desc: "Analyze and list all Server Actions",
   },
   seed: {
-    file: "analyzeNextRoutes.js",
+    file: "makeSeeder.js",
     desc: "Seed initial data into the database",
   },
   db: {
-    file: "analyzeNextRoutes.js",
+    file: "analyzeDB.js",
     desc: "Database management utilities",
   },
   backup: {
