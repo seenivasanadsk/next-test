@@ -42,4 +42,8 @@ export default {
     maxLogDays: 7,
     lines: 10
   },
+  schedule: {
+    prefix: "ntapp-",
+    scriptPath: "./schedule"
+  }
 };

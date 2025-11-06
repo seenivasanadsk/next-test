@@ -41,10 +41,10 @@ const commands = {
     file: "logManager.js",
     desc: "Manage application logs",
   },
-  // schedule: {
-  //   file: "scheduler.js",
-  //   desc: "Manage schedules and automated tasks",
-  // },
+  schedule: {
+    file: "scheduler.js",
+    desc: "Manage schedules and automated tasks",
+  },
 };
 
 bootCommand(commands);
