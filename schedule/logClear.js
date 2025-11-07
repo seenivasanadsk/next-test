@@ -5,4 +5,4 @@ const projectRoot = getProjectRoot()
 process.chdir(projectRoot);
 
 // Run dir command in Windows
-exec("node command server:start");
+exec("node command log:clean");
