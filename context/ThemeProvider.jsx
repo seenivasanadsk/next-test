@@ -29,24 +29,16 @@ const getInitialTheme = () => {
 export const ThemeProvider = ({ children }) => {
   // Initialize state from localStorage immediately (same as themeInitializerScript)
   const [theme, setThemeState] = useState(getInitialTheme);
-  const [hydrated, setHydrated] = useState(false);
 
   const appliedTheme = theme === "system" ? getSystemTheme() : theme;
 
-  // Mark as hydrated after mount
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
-
   // Apply theme to DOM *after* hydration or when user toggles
   useEffect(() => {
-    if (!hydrated) return; // skip initial load — already handled by themeInitializerScript
-
     const root = document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(appliedTheme);
     localStorage.setItem("theme", theme);
-  }, [theme, appliedTheme, hydrated]);
+  }, [theme, appliedTheme]);
 
   // theme setter with validation
   const setTheme = (newTheme) => {
@@ -64,7 +56,6 @@ export const ThemeProvider = ({ children }) => {
         appliedTheme,
         setTheme,
         themes,
-        hydrated,
       }}
     >
       {children}

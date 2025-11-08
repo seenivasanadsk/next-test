@@ -68,6 +68,8 @@ export async function verifySession(sessionId) {
         username: user.username,
         role: user.role,
         sessionId: session.sessionId,
+        user,
+        session,
         serverIP: await getServerIp(),
         serverPort: await getPort()
     };

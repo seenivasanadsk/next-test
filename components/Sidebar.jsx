@@ -14,7 +14,7 @@ import { useSession } from "@/context/SessionProvider";
 import SidebarHeaderButton from "./SidebarHeaderButton";
 import { useTheme } from "@/context/ThemeProvider";
 import { useRouter } from "next/navigation";
-import { startTransition, useEffect, useState } from "react";
+import { startTransition } from "react";
 import { useActionHandler } from "@/context/ActionHandlerProvider";
 import { logoutAction } from "@/actions/authAction";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -23,22 +23,13 @@ export default function Sidebar({ toggleSidebar }) {
   const router = useRouter();
   const { session } = useSession();
   const { runAction } = useActionHandler();
-  const { theme, setTheme, themes, hydrated } = useTheme();
-
-  // -------------------------------
-  // Local client-only hydration guard
-  // -------------------------------
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const { theme, setTheme, themes } = useTheme();
 
   // -------------------------------
   // Core Functions
   // -------------------------------
   const toggleTheme = (e) => {
     e?.preventDefault();
-    if (!hydrated) return;
     const currentIndex = themes.indexOf(theme);
     const nextIndex = (currentIndex + 1) % themes.length;
     setTheme(themes[nextIndex]);
@@ -83,15 +74,7 @@ export default function Sidebar({ toggleSidebar }) {
       title: "Toggle Theme (Alt+D)",
       onClick: toggleTheme,
       icon:
-        !isClient || !hydrated ? (
-          <Monitor />
-        ) : theme === "light" ? (
-          <Sun />
-        ) : theme === "dark" ? (
-          <Moon />
-        ) : (
-          <Monitor />
-        ),
+        theme === "light" ? <Sun /> : theme === "dark" ? <Moon /> : <Monitor />,
     },
     {
       title: "Go to Home (Alt+H)",
@@ -119,24 +102,6 @@ export default function Sidebar({ toggleSidebar }) {
       icon: <PanelRightClose />,
     },
   ];
-
-  // -------------------------------
-  // Render Placeholder (Before Hydration)
-  // -------------------------------
-  if (!isClient || !hydrated) {
-    return (
-      <div className="border-l-2 w-full h-full flex flex-col bg-gray-50 dark:bg-gray-950 shadow-2xl">
-        <div className="flex gap-2 p-2 flex-wrap border-b-2 opacity-50 animate-pulse">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700"
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   // -------------------------------
   // Render Actual Sidebar (After Hydration)

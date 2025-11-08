@@ -10,7 +10,6 @@ import InputField from "../fields/InputField";
 import SelectField from "../fields/SelectField";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSettings } from "@/context/SettingsProvider";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -20,7 +19,6 @@ export default function LoginForm() {
   const [error, showError] = useState(false);
   const [users, setUsers] = useState([]);
   const { runAction } = useActionHandler();
-  const { settings, updateSetting, hydrated } = useSettings();
 
   const [formData, setFormData] = useState({
     userId: "",
@@ -38,7 +36,7 @@ export default function LoginForm() {
     startTransition(async () => {
       const data = await runAction(loginAction, formData);
       if (data) {
-        updateSetting("lostUserId", formData.userId);
+        localStorage.setItem("lostUserId", formData.userId);
         router.push("/");
       } else {
         showError(true);
@@ -49,17 +47,15 @@ export default function LoginForm() {
 
   // Fetch users and apply saved userId after hydration
   useEffect(() => {
-    if (!hydrated) return; // wait until settings loaded
-
     startTransition(async () => {
       const data = await runAction(getUserOptionsAction, { silent: true });
       if (data) {
         setUsers(data);
-        const savedUserId = settings?.lostUserId || "";
+        const savedUserId = localStorage.getItem("lostUserId") || "";
         if (savedUserId) handleFormData("userId", savedUserId);
       }
     });
-  }, [hydrated]);
+  }, []);
 
   const config = {
     title: "Login",
@@ -70,8 +66,6 @@ export default function LoginForm() {
     submitText: "Login",
     submitPrefix: <LogIn />,
   };
-
-  if (!hydrated) return null; // avoids flicker completely
 
   return (
     <CommonForm config={config}>

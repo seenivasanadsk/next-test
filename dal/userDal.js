@@ -86,7 +86,7 @@ export async function updateUserLastAccess(userId) {
 
 export async function updateUserById(updates, id) {
   const db = await getDb();
-  const result = await db.collection("users").deleteOne({ _id: userId });
+  const result = await db.collection("users").updateOne({ _id: id }, { $set: updates });
   return result;
 }
 

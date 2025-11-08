@@ -20,7 +20,7 @@ export async function updateUser(updates, _id) {
   let { newPassword, confirmPassword, oldPassword, ...data } = updates;
 
   // Update Password if only any of these field has value
-  if ((newPassword !== "", confirmPassword !== "", oldPassword !== "")) {
+  if ((newPassword, confirmPassword, oldPassword)) {
     // check both passwords are same
     if (newPassword !== confirmPassword)
       throw new AppError("Password does not Match", 400);
