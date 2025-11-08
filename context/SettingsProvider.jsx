@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from "react";
 import { setUserSettingsAction } from "@/actions/userAction";
 
-const defaultSettings = { isSidebarOpen: false };
+const defaultSettings = { isSidebarOpen: true };
 
 const SettingsContext = createContext({
   settings: defaultSettings,
