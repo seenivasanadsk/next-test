@@ -4,14 +4,22 @@
 
 /* --- Base color variables --- */
 :root {
-  --color-bg-light: #ffffff;
+  --color-bg-light: #f6f6f6;
   --color-fg-light: #171717;
-  --color-bg-dark: #0a0a0a;
+  --color-bg-dark: #050100;
   --color-fg-dark: #ededed;
 
   /* Default to light theme */
   --background: var(--color-bg-light);
   --foreground: var(--color-fg-light);
+}
+
+@theme {
+  /* More darker version of amber color */
+  --color-amber-1000: #2d1202;
+  --color-amber-1100: #1b0b02;
+  --color-amber-1200: #100602;
+  --color-amber-full: #050100;
 }
 
 /* --- Tailwind inline theme variables --- */
@@ -54,14 +62,25 @@ input {
 
 /* Shake animation keyframes */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 60% { transform: translateX(-10px); }
-  15%, 45%, 75% { transform: translateX(10px);}
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  60% {
+    transform: translateX(-10px);
+  }
+  15%,
+  45%,
+  75% {
+    transform: translateX(10px);
+  }
 }
 
 /* Apply to input with error */
 .animate-shake {
-  animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+  animation: shake 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   border-color: red;
 }
 
@@ -85,4 +104,3 @@ input {
   background-color: rgba(128, 128, 128, 0.2); /* light transparent gray */
   border-radius: 9999px;
 }
-

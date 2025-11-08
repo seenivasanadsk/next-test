@@ -15,6 +15,7 @@ export default function InputField({
   onPrefixClick,
   onSuffixClick,
   className,
+  inputClassName,
   ...props
 }) {
   return (
@@ -28,7 +29,10 @@ export default function InputField({
     >
       {prefix && <InputPrefix onClick={onPrefixClick}>{prefix}</InputPrefix>}
       <input
-        className="outline-none w-full px-2 py-1 placeholder-gray-500 focus:placeholder-amber-800 focus:dark:placeholder-amber-200"
+        className={cn(
+          "outline-none w-full px-2 py-1 placeholder-gray-500 focus:placeholder-amber-800 focus:dark:placeholder-amber-200",
+          inputClassName
+        )}
         disabled={disabled}
         readOnly={disabled}
         type={type}

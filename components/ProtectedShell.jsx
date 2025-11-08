@@ -36,7 +36,7 @@ export default function ProtectedShell({ children }) {
           isSidebarOpen ? "mr-[180px]" : "mr-0"
         )}
       >
-        <div className="p-6 h-full">{children}</div>
+        {children}
       </main>
 
       <aside

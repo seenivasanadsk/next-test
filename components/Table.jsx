@@ -7,71 +7,44 @@ import cn from "@/utils/cn";
 export default function Table({ config }) {
   const { items, headers, editURL, deleteAction, loading } = config;
   return (
-    <table
-      className={cn("min-w-full border-collapse", loading && "opacity-50")}
-    >
-      <thead className="sticky top-0 bg-amber-100 dark:bg-amber-900 text-amber-900 dark:text-amber-100 z-10">
-        <tr className="uppercase">
-          {headers.map((header, i) => (
-            <TableHead key={i} header={header} />
-          ))}
-          <th className="border-b border-amber-300 dark:border-amber-950 px-3 py-2 text-center">
-            Action
-          </th>
+    <table className="min-w-full border-collapse text-sm md:text-base">
+      <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-amber-1100 text-gray-700 dark:text-amber-50 uppercase tracking-wide shadow-sm transition-colors duration-300">
+        <tr>
+          <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 1</th>
+          <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 2</th>
+          <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 3</th>
+          <th className="px-3 py-2 text-center font-semibold w-1/4">ACTION</th>
         </tr>
       </thead>
-
-      <tbody>
-        {items.length ? (
-          items.map((item, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className={`${
-                rowIndex % 2 === 0
-                  ? "bg-gray-50 dark:bg-gray-800"
-                  : "bg-white dark:bg-gray-900"
-              } hover:bg-amber-100 dark:hover:bg-amber-800 border-b border-gray-200 dark:border-gray-700`}
-            >
-              {headers.map((header, colIndex) => (
-                <td
-                  key={colIndex}
-                  className="whitespace-nowrap px-2 py-1 text-gray-900 dark:text-gray-100"
-                  title={display(item[header["valuePath"]], header["display"], {
-                    plain: true,
-                  })}
-                >
-                  {display(item[header["valuePath"]], header["display"])} <br />
-                </td>
-              ))}
-              <td className="px-2 py-1 text-center">
-                <Link
-                  href={editURL ? editURL + item._id : "#"}
-                  scroll={false}
-                  title="Edit"
-                  className="inline-block cursor-pointer rounded-full p-1 hover:bg-amber-200 dark:hover:bg-amber-700 transition"
-                >
-                  ✏️
-                </Link>
-
-                {deleteAction && (
-                  <TableDeleteButton
-                    id={item._id}
-                    deleteAction={deleteAction}
-                  />
-                )}
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td
-              colSpan={headers.length + 1}
-              className="p-6 text-center text-gray-500 dark:text-gray-400"
-            >
-              No Records Found.
+      <tbody className="divide-y divide-gray-200 dark:divide-gray-800 transition-colors duration-300">
+        {Array.from({ length: 25 }).map((_, i) => (
+          <tr
+            key={i}
+            className={`transition-colors hover:bg-amber-50 dark:hover:bg-amber-1100 ${
+              i % 2 === 1
+                ? "bg-gray-50 dark:bg-amber-1200"
+                : "bg-white dark:bg-amber-full"
+            }`}
+          >
+            <td className="px-3 py-1 whitespace-nowrap">data 1</td>
+            <td className="px-3 py-1 whitespace-nowrap">data 2</td>
+            <td className="px-3 py-1 whitespace-nowrap">data 3</td>
+            <td className="px-3 py-1 text-center">
+              <button
+                className="rounded-full p-1 hover:bg-amber-200 dark:hover:bg-amber-900 transition-colors cursor-pointer mr-2"
+                title="Edit"
+              >
+                ✏️
+              </button>
+              <button
+                className="rounded-full p-1 hover:bg-red-200 dark:hover:bg-red-900 transition-colors cursor-pointer"
+                title="Delete"
+              >
+                ❌
+              </button>
             </td>
           </tr>
-        )}
+        ))}
       </tbody>
     </table>
   );
