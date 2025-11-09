@@ -28,7 +28,7 @@ export default function TableDeleteButton({ id, deleteAction }) {
     <button
       onClick={handleDelete}
       disabled={isPending}
-      className={`inline-block cursor-pointer rounded-full p-1 transition ${
+      className={`inline-block cursor-pointer rounded-full p-1 ${
         isPending
           ? "opacity-50 cursor-not-allowed"
           : "hover:bg-amber-200 dark:hover:bg-amber-700"

@@ -51,7 +51,7 @@ export default function Button({
   };
 
   const baseClasses = cn(
-    "inline-flex items-center justify-center gap-2 font-semibold transition duration-200",
+    "inline-flex items-center justify-center gap-2 font-semibold",
     "focus:outline focus:outline-3 focus:outline-offset-2", // outline with offset
     "disabled:opacity-50 disabled:cursor-not-allowed relative" // disabled state
   );

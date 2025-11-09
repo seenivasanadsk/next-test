@@ -9,6 +9,7 @@ import Pagination from "./Pagination";
 import HorizontalLoader from "./HorizontalLoader";
 import DateNavigation from "./DateNavigation";
 import { useHotkeys } from "react-hotkeys-hook";
+import cn from "@/utils/cn";
 
 export default function DataTable({ config: parentConfig }) {
   const [tableOptions, setTableOptions] = useState({});
@@ -32,10 +33,10 @@ export default function DataTable({ config: parentConfig }) {
     ...parentConfig,
   };
   return (
-    <div className="h-full flex justify-center items-center text-gray-900 dark:text-gray-100 duration-300 p-6">
-      <main className="bg-white dark:bg-amber-1200 shadow-xl max-w-6xl w-full h-full rounded-xl overflow-hidden flex flex-col text-lg duration-300">
+    <div className="h-full flex justify-center items-center text-gray-900 dark:text-gray-100 p-6">
+      <main className="bg-white dark:bg-amber-1200 shadow-xl max-w-6xl w-full h-full rounded-xl overflow-hidden flex flex-col text-lg">
         {/* Header */}
-        <header className="items-center bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-b border-amber-200 dark:border-amber-950 flex flex-col md:flex-row gap-3 duration-300">
+        <header className="items-center bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-b border-amber-200 dark:border-amber-950 flex flex-col md:flex-row gap-3">
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-3xl font-semibold">{config.title}</h1>
           </div>
@@ -59,25 +60,32 @@ export default function DataTable({ config: parentConfig }) {
 
         {/* Table Section */}
         <div className="flex-1 p-6 overflow-hidden">
-          <div className="h-full border border-gray-200 relative dark:border-gray-700 rounded-xl shadow-sm overflow-hidden flex flex-col duration-300">
+          <div className="h-full border border-gray-200 relative dark:border-gray-700 rounded-xl shadow-sm overflow-hidden flex flex-col">
             {config.items.length ? (
-              <div className="overflow-auto flex-1">
+              <div
+                className={cn(
+                  "overflow-auto flex-1",
+                  config?.loading && "opacity-50"
+                )}
+              >
                 <Table config={config} />
               </div>
             ) : (
-              <div className="p-4 flex justify-center flex-col items-center h-full text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-amber-1200 duration-300">
+              <div
+                className={cn(
+                  "p-4 flex justify-center flex-col items-center h-full text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-amber-1200",
+                  config?.loading && "opacity-50"
+                )}
+              >
                 <div className="mb-3">{config.noDataIcon}</div>
                 <div>{config.noDataText}</div>
               </div>
-            )}
-            {config.loading && (
-              <div className="flex h-full bg-black/10 dark:bg-black/20 absolute inset-0 z-10" />
             )}
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-t border-amber-200 dark:border-amber-950 flex justify-between items-center flex-col md:flex-row gap-3 duration-300">
+        <footer className="bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-t border-amber-200 dark:border-amber-950 flex justify-between items-center flex-col md:flex-row gap-3">
           <div className="flex gap-x-4">{/* Exra button here */}</div>
           <div className="border rounded p-1 uppercase text-xs border-amber-300 dark:border-amber-950">
             {/* Midle informaticve */}

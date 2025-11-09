@@ -4,7 +4,7 @@ import { Home } from "lucide-react";
 
 export default function NotFoundPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center w-full transition-colors duration-300">
+    <main className="min-h-screen flex flex-col items-center justify-center w-full">
       <div className="text-center px-6 py-12 max-w-md mx-auto">
         <div className="mb-8 text-6xl text-amber-500 dark:text-amber-400">
           ⚠️

@@ -1,12 +1,12 @@
 // src/utils/themeScript.js
 
 /**
- * This function contains the logic to read the user's saved theme from localStorage 
- * or determine the system preference, and immediately apply the 'dark' or 'light' 
+ * This function contains the logic to read the user's saved theme from localStorage
+ * or determine the system preference, and immediately apply the 'dark' or 'light'
  * class to the <html> element to prevent a flicker.
  */
 export const themeInitializerScript = () => {
-  const themes = ['light', 'dark', 'system'];
+  const themes = ["light", "dark", "system"];
 
   // Script is executed as a string, so all logic must be self-contained
   const codeToRun = `

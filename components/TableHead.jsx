@@ -76,7 +76,7 @@ export default function TableHead({ header }) {
         {header.sortable && (
           <span
             className={cn(
-              "inline-block text-amber-700 dark:text-amber-200 transition-transform duration-200",
+              "inline-block text-amber-700 dark:text-amber-200",
               isActive
                 ? isDescending
                   ? "rotate-180 opacity-100"
