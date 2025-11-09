@@ -13,7 +13,6 @@ export default async function UsersPage({ searchParams }) {
   const config = {
     title: "Users",
     addButtonText: "Add User",
-    footerContent: "Footer Information from Parent",
     items: users.items,
     headers: users.headers,
     filterable: users.filterable,
@@ -23,6 +22,7 @@ export default async function UsersPage({ searchParams }) {
     page: users.page,
     itemsPerPage: users.itemsPerPage,
     entityType: "users",
+    loading: false,
   };
   return (
     <>

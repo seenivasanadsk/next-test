@@ -30,7 +30,7 @@ export default function Button({
     danger:
       "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 dark:bg-red-500 dark:hover:bg-red-600 dark:active:bg-red-700 focus:outline-red-600 dark:focus:outline-red-400",
     success:
-      "bg-green-600 text-white hover:bg-green-700 active:bg-green-800 dark:bg-green-500 dark:hover:bg-green-600 dark:active:bg-green-700 focus:outline-green-600 dark:focus:outline-green-400",
+      "bg-green-600 text-white hover:bg-green-700 active:bg-green-800 dark:bg-green-700 dark:hover:bg-green-800 dark:active:bg-green-700 focus:outline-green-600 dark:focus:outline-green-700",
   };
 
   const disabledStyles =
@@ -53,7 +53,7 @@ export default function Button({
   const baseClasses = cn(
     "inline-flex items-center justify-center gap-2 font-semibold transition duration-200",
     "focus:outline focus:outline-3 focus:outline-offset-2", // outline with offset
-    "disabled:opacity-50 disabled:cursor-not-allowed"
+    "disabled:opacity-50 disabled:cursor-not-allowed relative" // disabled state
   );
 
   const buttonClass = cn(
