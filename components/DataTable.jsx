@@ -34,7 +34,7 @@ export default function DataTable({ config: parentConfig }) {
   };
   return (
     <div className="h-full flex justify-center items-center text-gray-900 dark:text-gray-100 p-6">
-      <main className="bg-white dark:bg-amber-1200 shadow-xl max-w-6xl w-full h-full rounded-xl overflow-hidden flex flex-col text-lg">
+      <main className="bg-white dark:bg-gray-950 shadow-xl max-w-6xl w-full h-full rounded-xl overflow-hidden flex flex-col text-lg">
         {/* Header */}
         <header className="items-center bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-b border-amber-200 dark:border-amber-950 flex flex-col md:flex-row gap-3">
           <div className="flex-1 text-center md:text-left">

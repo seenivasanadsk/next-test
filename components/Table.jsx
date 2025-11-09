@@ -8,7 +8,7 @@ export default function Table({ config }) {
   const { items, headers, editURL, deleteAction, loading } = config;
   return (
     <table className="min-w-full border-collapse text-sm md:text-base">
-      <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-amber-1100 text-gray-700 dark:text-amber-50 uppercase tracking-wide shadow-sm">
+      <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-amber-50 uppercase tracking-wide shadow-sm">
         <tr>
           <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 1</th>
           <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 2</th>
@@ -20,10 +20,10 @@ export default function Table({ config }) {
         {Array.from({ length: 25 }).map((_, i) => (
           <tr
             key={i}
-            className={`hover:bg-amber-50 dark:hover:bg-amber-1100 ${
+            className={`hover:bg-amber-50 dark:hover:bg-amber-full ${
               i % 2 === 1
-                ? "bg-gray-50 dark:bg-amber-1200"
-                : "bg-white dark:bg-amber-full"
+                ? "bg-gray-50 dark:bg-gray-900"
+                : "bg-white dark:bg-gray-950"
             }`}
           >
             <td className="px-3 py-1 whitespace-nowrap">data 1</td>

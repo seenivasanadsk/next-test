@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "dev:opt": "set NODE_OPTIONS=--max-old-space-size=2048 && next dev"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
