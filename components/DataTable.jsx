@@ -11,6 +11,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import DateNavigation from "./DateNavigation";
 
 export default function DataTable({ config: parentConfig }) {
+  const [tableOptions, setTableOptions] = useState({});
+
+  function updateTableOption(key, val) {
+    setTableOptions((prev) => ({ ...prev, key: val }));
+  }
+
   const config = {
     title: "Data Table",
     addButtonText: "Add",
@@ -25,8 +31,12 @@ export default function DataTable({ config: parentConfig }) {
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-3xl font-semibold">{config.title}</h1>
           </div>
+          {JSON.stringify(tableOptions.date)}
           <div className="flex-1 text-center">
-            <DateNavigation />
+            <DateNavigation
+              value={tableOptions.date}
+              onValue={(val) => updateTableOption("date", val)}
+            />
           </div>
           <div className="flex-1 self-center flex gap-2 justify-end">
             <button className="px-2 py-1 rounded-md cursor-pointer bg-blue-500 dark:bg-blue-800 text-white shadow hover:bg-blue-600 transition-colors">

@@ -11,8 +11,9 @@ export default function DateNavigation({ value, onValue }) {
   function handleInput(e, canConvert = false) {
     const { value } = e?.target;
     if (canConvert) {
-      setDateInput(convertToDate(value));
-      onValue();
+      const converted = convertToDate(value);
+      setDateInput(converted);
+      onValue(parseDateTime(converted));
     } else {
       setDateInput(value);
     }
@@ -24,6 +25,7 @@ export default function DateNavigation({ value, onValue }) {
     newDate.setDate(date.getDate() + val);
     const converted = convertToDate(newDate);
     setDateInput(converted);
+    onValue(parseDateTime(converted));
   }
 
   return (
