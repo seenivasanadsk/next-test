@@ -55,7 +55,7 @@ export default function DateNavigation({ onValue }) {
       </Button>
 
       <InputField
-        className="mb-0 max-w-[130px] border-amber-600 dark:border-amber-600 focus:outline-amber-600 dark:focus:outline-amber-500"
+        className="mb-0 w-[130px] border-amber-600 dark:border-amber-600 focus:outline-amber-600 dark:focus:outline-amber-500"
         inputClassName="text-center"
         onChange={(e) => handleInput(e)}
         onBlur={(e) => handleInput(e, true)}
