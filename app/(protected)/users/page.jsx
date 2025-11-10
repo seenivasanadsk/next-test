@@ -20,6 +20,7 @@ export default async function UsersPage({ searchParams }) {
     filtered: users.filtered,
     search: parsedData.search || "",
     page: users.page,
+    showDateNavigator: false,
     itemsPerPage: users.itemsPerPage,
     entityType: "users",
     loading: false,

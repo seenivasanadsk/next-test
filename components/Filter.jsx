@@ -9,18 +9,9 @@ import { useHotkeys } from "react-hotkeys-hook";
 import DateTimeField from "./DateTimeField";
 import ResponsiveField from "./fields/ResponsiveField";
 
-export default function Filter({
-  headers,
-  filterable,
-  updateParams,
-  className,
-}) {
+export default function Filter({ className }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({});
-
-  const filterableHeaders = headers.filter(
-    (h) => h.filterable && h.filterable !== "Off"
-  );
 
   useHotkeys("alt+f", (e) => {
     e.preventDefault();
@@ -28,17 +19,11 @@ export default function Filter({
   });
 
   const trigger = (
-    <Button
-      onClick={() => setOpen(true)}
-      size="sm"
-      className={className}
-      prefix={<Funnel />}
-    >
+    <Button size="sm" prefix={<Funnel />} title="(Alt+F or 7) Filter Records">
       Filter
     </Button>
   );
 
-  /** ✅ Fix: merge only if value is an object */
   const handleFilterChange = (field, value) => {
     setFormData((prev) => {
       const existing = prev[field];
@@ -86,44 +71,7 @@ export default function Filter({
 
   return (
     <Dialog state={open} trigger={trigger} onClose={() => setOpen(false)}>
-      <CommonForm config={config}>
-        {filterableHeaders.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400">
-            No filterable fields available.
-          </p>
-        ) : (
-          filterableHeaders.map((header, index) => {
-            const commonProps = {
-              placeholder: header.title,
-              value: formData[header.valuePath],
-              onValue: (val) => handleFilterChange(header.valuePath, val),
-            };
-
-            switch (header.filterable) {
-              case "Select": {
-                const options = filterable[header.valuePath].map((item) => ({
-                  title: item,
-                  value: item,
-                }));
-                return (
-                  <SelectField {...commonProps} key={index} options={options} />
-                );
-              }
-
-              case "Date":
-                return (
-                  <ResponsiveField key={index}>
-                    <DateTimeField {...commonProps} type="from" /> To{" "}
-                    <DateTimeField {...commonProps} type="to" />
-                  </ResponsiveField>
-                );
-
-              default:
-                return null;
-            }
-          })
-        )}
-      </CommonForm>
+      <CommonForm config={config}></CommonForm>
     </Dialog>
   );
 }

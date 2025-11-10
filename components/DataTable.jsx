@@ -1,25 +1,54 @@
 "use client";
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useRef, useState } from "react";
 import Table from "./Table";
-import DataTableSearch from "./DataTableSearch";
 import Button from "./Button";
 import Filter from "./Filter";
-import { FileSearchIcon, PlusCircleIcon } from "lucide-react";
+import {
+  FileSearchIcon,
+  Funnel,
+  Pin,
+  PlusCircleIcon,
+  Search,
+} from "lucide-react";
 import Pagination from "./Pagination";
 import HorizontalLoader from "./HorizontalLoader";
 import DateNavigation from "./DateNavigation";
 import { useHotkeys } from "react-hotkeys-hook";
 import cn from "@/utils/cn";
+import InputField from "./fields/InputField";
+import Popover from "./Popover";
+import PopoverMenu from "./PopoverMenu";
 
 export default function DataTable({ config: parentConfig }) {
-  const [tableOptions, setTableOptions] = useState({});
+  const [tableOptions, setTableOptions] = useState({
+    page: 1,
+    itemsPerPage: 25,
+    search: "",
+  });
+  const popoverRef = useRef();
 
-  function updateTableOption(key, val) {
-    setTableOptions((prev) => ({ ...prev, [key]: val }));
+  function updateTable(key, val) {
+    setTableOptions((prev) => {
+      const newOptions = { ...prev };
+      switch (key) {
+        case "itemsPerPage":
+          newOptions["itemsPerPage"] = val;
+          newOptions["page"] = 1;
+          break;
+        default:
+          newOptions[key] = val;
+          break;
+      }
+      console.log(newOptions);
+      return newOptions;
+    });
   }
 
   useHotkeys(["alt+n", "0"], () => {
     console.log("Add New Item");
+  });
+  useHotkeys(["alt+g", "8"], () => {
+    popoverRef.current.toggle();
   });
 
   const config = {
@@ -27,6 +56,7 @@ export default function DataTable({ config: parentConfig }) {
     addButtonText: "Add",
     items: [],
     loading: false,
+    showDateNavigator: false,
     noDataText: "No data found",
     noDataIcon: <FileSearchIcon size={35} />,
     onAdd: () => {},
@@ -36,24 +66,44 @@ export default function DataTable({ config: parentConfig }) {
     <div className="h-full flex justify-center items-center text-gray-900 dark:text-gray-100 p-6">
       <main className="bg-white dark:bg-gray-950 shadow-xl max-w-6xl w-full h-full rounded-xl overflow-hidden flex flex-col text-lg">
         {/* Header */}
-        <header className="items-center bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-b border-amber-200 dark:border-amber-950 flex flex-col md:flex-row gap-3">
-          <div className="flex-1 text-center md:text-left">
+        <header className="items-center bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-b border-amber-200 dark:border-amber-950 flex flex-col lg:flex-row gap-3">
+          <div className="flex-1 text-center lg:text-left flex flex-col lg:flex-row gap-x-5">
             <h1 className="text-3xl font-semibold">{config.title}</h1>
           </div>
           <div className="flex-1 flex justify-center">
-            <DateNavigation onValue={(val) => updateTableOption("date", val)} />
+            {config.showDateNavigator && (
+              <DateNavigation
+                onValue={(val) => updateTableOption("date", val)}
+              />
+            )}
           </div>
           <div className="flex-1 self-center flex gap-2 justify-end">
-            {config.addButtonText && (
-              <Button
-                onClick={config.onAdd}
-                title="(Alt+N or 0) New Record"
-                variant="success"
-                prefix={<PlusCircleIcon />}
-              >
-                {config.addButtonText}
-              </Button>
-            )}
+            <Popover
+              ref={popoverRef}
+              trigger={
+                <Button size="sm" title="(Alt+G or 8) Search Records">
+                  <Search />
+                </Button>
+              }
+            >
+              <InputField
+                className={"mb-0 w-[200px]"}
+                prefix={<Search />}
+                value={tableOptions.search}
+                onValue={(val) => updateTable("search", val)}
+                placeholder="Search..."
+              />
+            </Popover>
+            <Filter />
+            <Button
+              size="sm"
+              onClick={config.onAdd}
+              title="(Alt+N or 0) New Record"
+              variant="success"
+              prefix={<PlusCircleIcon />}
+            >
+              {config.addButtonText || "New"}
+            </Button>
           </div>
         </header>
         <HorizontalLoader loading={config.loading} />
@@ -85,21 +135,43 @@ export default function DataTable({ config: parentConfig }) {
         </div>
 
         {/* Footer */}
-        <footer className="bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-t border-amber-200 dark:border-amber-950 flex justify-between items-center flex-col md:flex-row gap-3">
-          <div className="flex gap-x-4">{/* Exra button here */}</div>
-          <div className="border rounded p-1 uppercase text-xs border-amber-300 dark:border-amber-950">
-            {/* Midle informaticve */}
+        <footer className="bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-t border-amber-200 dark:border-amber-950 flex justify-between items-center flex-col lg:flex-row gap-3">
+          <div className="flex-1 flex gap-x-2">
+            <PopoverMenu
+              align="bottom-left"
+              trigger={
+                <Button size="sm" prefix={<Pin />}>
+                  Saved Filters
+                </Button>
+              }
+              items={[
+                { label: "Edit" },
+                { label: "Duplicate" },
+                { label: "Archive" },
+                { label: "Delete" },
+              ]}
+              onSelect={(e) => console.log(e)}
+            />
           </div>
-          <div className="flex gap-x-3">
-            {/* <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-1 text-amber-50 dark:text-amber-50">
+          <div className="flex-1">
+            <Pagination
+              itemsCount={100}
+              page={tableOptions.page}
+              onPageChange={(val) => updateTable("page", val)}
+              itemsPerPage={tableOptions.itemsPerPage}
+              onItemsPerPageChange={(val) => updateTable("itemsPerPage", val)}
+            />
+          </div>
+          <div className="flex gap-x-1 text-base flex-1 justify-end">
+            <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
               Total: 00
             </span>
-            <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-1 text-amber-50 dark:text-amber-50">
+            <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
               Opened: 00
             </span>
-            <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-1 text-amber-50 dark:text-amber-50">
+            <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
               Closed: 00
-            </span> */}
+            </span>
           </div>
         </footer>
       </main>

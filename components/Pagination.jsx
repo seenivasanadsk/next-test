@@ -1,49 +1,46 @@
 "use client";
 
 import React from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import cn from "@/utils/cn";
+import { ChevronDown } from "lucide-react";
 
 export default function Pagination({
-  totalItems,
-  filteredItems,
+  itemsCount = 1,
   defaultPageSize = 25,
+  page,
+  onPageChange,
+  itemsPerPage,
+  onItemsPerPageChange,
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  // --- Current state from URL ---
+  page = Math.max(Number(page) || 1, 1);
+  const pageSize = Math.max(Number(itemsPerPage) || defaultPageSize, 1);
 
-  const page = Number(searchParams.get("page") || 1);
-  const pageSize = Number(searchParams.get("itemsPerPage") || defaultPageSize);
-
-  const totalPages = Math.ceil(filteredItems / pageSize);
-  if (totalPages <= 1) return null;
-
-  // --- Helper: update search params ---
-  const updateParams = (newPage, newPageSize) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (newPage === 1) params.delete("page");
-    else params.set("page", newPage);
-
-    if (newPageSize === defaultPageSize) params.delete("itemsPerPage");
-    else params.set("itemsPerPage", newPageSize);
-
-    const newUrl = params.toString()
-      ? `${pathname}?${params.toString()}`
-      : pathname;
-    router.replace(newUrl, { scroll: false });
-  };
+  // --- Derived values ---
+  const totalPages = Math.max(Math.ceil(itemsCount / pageSize), 1);
 
   // --- Generate page numbers with ellipsis ---
   const getPageNumbers = () => {
     const pages = [];
-    if (totalPages <= 7) {
+    const maxVisible = 7;
+
+    if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-      if (page <= 2) {
-        pages.push(1, 2, 3, "...", totalPages);
-      } else if (page >= totalPages - 1) {
-        pages.push(1, "...", totalPages - 2, totalPages - 1, totalPages);
+      const showLeftEllipsis = page > 3;
+      const showRightEllipsis = page < totalPages - 2;
+
+      if (!showLeftEllipsis && showRightEllipsis) {
+        pages.push(1, 2, 3, 4, "...", totalPages);
+      } else if (showLeftEllipsis && !showRightEllipsis) {
+        pages.push(
+          1,
+          "...",
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        );
       } else {
         pages.push(1, "...", page - 1, page, page + 1, "...", totalPages);
       }
@@ -52,19 +49,19 @@ export default function Pagination({
   };
 
   const pageNumbers = getPageNumbers();
-
-  // --- Items per page options ---
   const pageSizeOptions = [25, 50, 100, 150, 200];
 
   return (
-    <div className="flex items-center gap-2 mt-4 justify-between flex-col md:flex-row">
-      {/* Page Numbers */}
-      <div className="flex gap-1">
+    <div className="flex flex-col md:flex-row justify-center items-center gap-3 py-2 text-sm">
+      {/* --- Page Navigation --- */}
+      <div className="flex items-center gap-1">
+        {/* Prev button */}
         <button
-          onClick={() => updateParams(page - 1, pageSize)}
+          onClick={() => onPageChange(page - 1)}
           disabled={page === 1}
+          aria-label="Previous page"
           className={cn(
-            "px-1 py-0 rounded border-2",
+            "px-1 py-0.5 rounded border-2",
             page === 1
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-amber-200 dark:hover:bg-amber-700"
@@ -73,17 +70,20 @@ export default function Pagination({
           <span className="inline-block rotate-180">&#10148;</span>
         </button>
 
-        {pageNumbers.map((p, idx) =>
+        {/* Page numbers */}
+        {pageNumbers.map((p, i) =>
           p === "..." ? (
-            <span key={idx} className="px-1 py-0">
+            <span key={i} className="px-2">
               ...
             </span>
           ) : (
             <button
-              key={idx}
-              onClick={() => updateParams(p, pageSize)}
+              key={i}
+              onClick={() => onPageChange(p)}
+              aria-current={p === page ? "page" : undefined}
+              aria-label={`Go to page ${p}`}
               className={cn(
-                "px-1 py-0 rounded border-2",
+                "px-1 py-0.5 rounded border-2",
                 p === page
                   ? "bg-amber-600 text-white border-amber-800 dark:border-amber-200 dark:bg-amber-500"
                   : "hover:bg-amber-200 dark:hover:bg-amber-700"
@@ -94,11 +94,13 @@ export default function Pagination({
           )
         )}
 
+        {/* Next button */}
         <button
-          onClick={() => updateParams(page + 1, pageSize)}
+          onClick={() => onPageChange(page + 1)}
           disabled={page === totalPages}
+          aria-label="Next page"
           className={cn(
-            "px-1 py-0 rounded border-2",
+            "px-1 py-0.5 rounded border-2",
             page === totalPages
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-amber-200 dark:hover:bg-amber-700"
@@ -107,23 +109,17 @@ export default function Pagination({
           <span className="inline-block">&#10148;</span>
         </button>
       </div>
-
-      <div className="flex gap-2">
-        <span className="inline-block bg-amber-800 text-amber-50 dark:bg-amber-100 dark:text-amber-800 px-2 py-1 rounded">
-          Total: {totalItems}
-        </span>
-        <span className="inline-block bg-amber-800 text-amber-50 dark:bg-amber-100 dark:text-amber-800 px-2 py-1 rounded">
-          Filtered: {filteredItems}
-        </span>
-      </div>
-
-      {/* Items Per Page Selector */}
-      <div className="flex items-center gap-2">
-        <span>Per Page:</span>
+      {/* --- Items per page selector --- */}
+      <div className="relative inline-block">
         <select
+          id="itemsPerPage"
           value={pageSize}
-          onChange={(e) => updateParams(1, Number(e.target.value))}
-          className="border-2 rounded px-2 py-1"
+          onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
+          className="
+            bg-transparent cursor-pointer px-1 py-[2px] pr-6 
+            rounded border-2 outline-none appearance-none
+            dark:bg-amber-1000 dark:text-amber-50
+          "
         >
           {pageSizeOptions.map((size) => (
             <option key={size} value={size}>
@@ -131,9 +127,12 @@ export default function Pagination({
             </option>
           ))}
         </select>
-        <span>
-          {page} of {totalPages}
-        </span>
+
+        {/* Custom dropdown arrow */}
+        <ChevronDown
+          size={16}
+          className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-amber-800 dark:text-amber-50"
+        />
       </div>
     </div>
   );

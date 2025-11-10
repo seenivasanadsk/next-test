@@ -30,11 +30,11 @@ export default function SelectField({
 
   /* -------------------- Derived Data -------------------- */
   const filteredOptions = options.length
-    ? options.filter((option) =>
-        stringCase
+    ? options.filter((option) => {
+        return stringCase
           .lower(option[optionLabel])
-          .startsWith(stringCase.lower(search))
-      )
+          .startsWith(stringCase.lower(search));
+      })
     : [];
 
   /* -------------------- Helpers -------------------- */
