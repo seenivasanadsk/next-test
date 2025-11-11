@@ -4,8 +4,8 @@ import Table from "./Table";
 import Button from "./Button";
 import Filter from "./Filter";
 import {
+  ChevronUp,
   FileSearchIcon,
-  Funnel,
   Pin,
   PlusCircleIcon,
   Search,
@@ -44,8 +44,21 @@ export default function DataTable({ config: parentConfig }) {
     });
   }
 
+  const savedFilter = [
+    { label: "Delivery Filter" },
+    { label: "Settings Filter" },
+    // { label: "Tokens Filter" },
+    // { label: "Ledger Filter" },
+    // { label: "User Filter" },
+    // { label: "Profile Filter" },
+    // { label: "Logout Filter" },
+  ];
+
   useHotkeys(["alt+n", "0"], () => {
     console.log("Add New Item");
+  });
+  useHotkeys(["1", "2"], (e) => {
+    console.log("Saved Filter", e.key);
   });
   useHotkeys(["alt+g", "8"], () => {
     popoverRef.current.toggle();
@@ -77,7 +90,7 @@ export default function DataTable({ config: parentConfig }) {
               />
             )}
           </div>
-          <div className="flex-1 self-center flex gap-2 justify-end">
+          <div className="flex-1 items-start flex gap-2 justify-end">
             <Popover
               ref={popoverRef}
               trigger={
@@ -137,21 +150,24 @@ export default function DataTable({ config: parentConfig }) {
         {/* Footer */}
         <footer className="bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-t border-amber-200 dark:border-amber-950 flex justify-between items-center flex-col lg:flex-row gap-3">
           <div className="flex-1 flex gap-x-2">
-            <PopoverMenu
-              align="bottom-left"
-              trigger={
-                <Button size="sm" prefix={<Pin />}>
-                  Saved Filters
+            {savedFilter.length >= 3 ? (
+              <PopoverMenu
+                trigger={
+                  <Button size="sm" prefix={<Pin />} suffix={<ChevronUp />}>
+                    Saved Filter
+                  </Button>
+                }
+                align="top-left"
+                items={savedFilter}
+                onSelect={(item) => console.log("Selected:", item)}
+              />
+            ) : (
+              savedFilter.map((f) => (
+                <Button size="sm" key={f.label}>
+                  {f.label}
                 </Button>
-              }
-              items={[
-                { label: "Edit" },
-                { label: "Duplicate" },
-                { label: "Archive" },
-                { label: "Delete" },
-              ]}
-              onSelect={(e) => console.log(e)}
-            />
+              ))
+            )}
           </div>
           <div className="flex-1">
             <Pagination
@@ -162,15 +178,12 @@ export default function DataTable({ config: parentConfig }) {
               onItemsPerPageChange={(val) => updateTable("itemsPerPage", val)}
             />
           </div>
-          <div className="flex gap-x-1 text-base flex-1 justify-end">
+          <div className="flex gap-x-2 text-base flex-1 justify-end">
             <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
-              Total: 00
+              Total: {config?.totalItems || "0"}
             </span>
             <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
-              Opened: 00
-            </span>
-            <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
-              Closed: 00
+              Filtered: {config.totalFilteredItems || "0"}
             </span>
           </div>
         </footer>

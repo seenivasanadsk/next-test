@@ -1,13 +1,16 @@
 // scripts/seed/users.js
 import bcrypt from "bcrypt";
 
+const admin = {
+  username: process.env.ADMIN_NAME || "Admin",
+  email: process.env.ADMIN_EMAIL || "admin@example.com",
+  password: process.env.ADMIN_PASSWORD || "Admin@123",
+  role: "Admin",
+}
+
 const users = [
-  {
-    username: process.env.ADMIN_NAME || "Admin",
-    email: process.env.ADMIN_EMAIL || "admin@example.com",
-    password: process.env.ADMIN_PASSWORD || "Admin@123",
-    role: "Admin",
-  },
+  // ...Array(60).fill(admin),
+  admin,
   { username: "Guna", email: "guna@example.com", password: "Guna@123", role: "Manager" },
   { username: "Nataraj", email: "nataraj@example.com", password: "Nataraj@123", role: "Manager" },
   { username: "VJ", email: "vj@example.com", password: "VJ@123", role: "Manager" },

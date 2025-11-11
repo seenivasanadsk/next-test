@@ -1,47 +1,78 @@
+"use client";
 import Link from "next/link";
-import TableHead from "./TableHead";
-import TableDeleteButton from "./TableDeleteAction";
-import display from "@/utils/display";
 import cn from "@/utils/cn";
+import display from "@/utils/display";
 
 export default function Table({ config }) {
-  const { items, headers, editURL, deleteAction, loading } = config;
+  const { items = [], headers = [], editURL, deleteAction } = config || {};
+
+  if (!items.length) {
+    return (
+      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
+        No data available
+      </div>
+    );
+  }
+
   return (
     <table className="min-w-full border-collapse text-sm md:text-base">
       <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-amber-50 uppercase tracking-wide shadow-sm">
         <tr>
-          <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 1</th>
-          <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 2</th>
-          <th className="px-3 py-2 text-left font-semibold w-1/4">TEST 3</th>
-          <th className="px-3 py-2 text-center font-semibold w-1/4">ACTION</th>
+          {headers.map((header, i) => (
+            <th
+              key={i}
+              className="px-4 py-3 text-left font-semibold whitespace-nowrap bg-inherit"
+            >
+              {header.title}
+            </th>
+          ))}
+          <th className="px-4 py-3 text-center font-semibold whitespace-nowrap bg-inherit">
+            Action
+          </th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-        {Array.from({ length: 25 }).map((_, i) => (
+
+      {/* ---------- Table Body ---------- */}
+      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+        {items.map((item, itemIndex) => (
           <tr
-            key={i}
-            className={`hover:bg-amber-50 dark:hover:bg-amber-full ${
-              i % 2 === 1
+            key={item._id || itemIndex}
+            className={cn(
+              "hover:bg-amber-50 dark:hover:bg-amber-900/40 last:border-b-1 border-gray-200 dark:border-gray-700",
+              itemIndex % 2 === 1
                 ? "bg-gray-50 dark:bg-gray-900"
                 : "bg-white dark:bg-gray-950"
-            }`}
+            )}
           >
-            <td className="px-3 py-1 whitespace-nowrap">data 1</td>
-            <td className="px-3 py-1 whitespace-nowrap">data 2</td>
-            <td className="px-3 py-1 whitespace-nowrap">data 3</td>
-            <td className="px-3 py-1 text-center">
-              <button
-                className="rounded-full p-1 hover:bg-amber-200 dark:hover:bg-amber-900 cursor-pointer mr-2"
-                title="Edit"
+            {headers.map((header, headerIndex) => (
+              <td
+                key={`${itemIndex}-${headerIndex}`}
+                className="px-4 py-2 whitespace-nowrap text-gray-800 dark:text-gray-100"
               >
-                ✏️
-              </button>
-              <button
-                className="rounded-full p-1 hover:bg-red-200 dark:hover:bg-red-900 cursor-pointer"
-                title="Delete"
-              >
-                ❌
-              </button>
+                {display(item[header.valuePath])}
+              </td>
+            ))}
+
+            {/* ---------- Action Buttons ---------- */}
+            <td className="px-4 py-2 text-center whitespace-nowrap">
+              {editURL && (
+                <Link
+                  href={`${editURL}/${item._id}`}
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-amber-200 dark:hover:bg-amber-800 mr-1"
+                  title="Edit"
+                >
+                  ✏️
+                </Link>
+              )}
+              {deleteAction && (
+                <button
+                  onClick={() => deleteAction(item)}
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-red-200 dark:hover:bg-red-900"
+                  title="Delete"
+                >
+                  ❌
+                </button>
+              )}
             </td>
           </tr>
         ))}
