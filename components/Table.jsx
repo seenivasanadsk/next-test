@@ -3,16 +3,8 @@ import Link from "next/link";
 import cn from "@/utils/cn";
 import display from "@/utils/display";
 
-export default function Table({ config }) {
-  const { items = [], headers = [], editURL, deleteAction } = config || {};
-
-  if (!items.length) {
-    return (
-      <div className="text-center py-10 text-gray-500 dark:text-gray-400">
-        No data available
-      </div>
-    );
-  }
+export default function Table({ result }) {
+  const { items = [], headers = [], editURL, deleteAction } = result || {};
 
   return (
     <table className="min-w-full border-collapse text-sm md:text-base">

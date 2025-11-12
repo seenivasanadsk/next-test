@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import Table from "./Table";
 import Button from "./Button";
 import Filter from "./Filter";
@@ -18,14 +18,28 @@ import cn from "@/utils/cn";
 import InputField from "./fields/InputField";
 import Popover from "./Popover";
 import PopoverMenu from "./PopoverMenu";
+import { getDataTableAction } from "@/actions/dataTableAction";
 
 export default function DataTable({ config: parentConfig }) {
+  const config = {
+    title: "Data Table",
+    addButtonText: "Add",
+    items: [],
+    showDateNavigator: false,
+    noDataText: "No data found",
+    noDataIcon: <FileSearchIcon size={35} />,
+    onAdd: () => {},
+    ...parentConfig,
+  };
+
   const [tableOptions, setTableOptions] = useState({
     page: 1,
     itemsPerPage: 25,
     search: "",
   });
+  const [tableData, setTableData] = useState(config.firstData);
   const popoverRef = useRef();
+  const [isPending, startTransition] = useTransition();
 
   function updateTable(key, val) {
     setTableOptions((prev) => {
@@ -40,6 +54,7 @@ export default function DataTable({ config: parentConfig }) {
           break;
       }
       console.log(newOptions);
+      handleDataFetch(newOptions);
       return newOptions;
     });
   }
@@ -64,17 +79,13 @@ export default function DataTable({ config: parentConfig }) {
     popoverRef.current.toggle();
   });
 
-  const config = {
-    title: "Data Table",
-    addButtonText: "Add",
-    items: [],
-    loading: false,
-    showDateNavigator: false,
-    noDataText: "No data found",
-    noDataIcon: <FileSearchIcon size={35} />,
-    onAdd: () => {},
-    ...parentConfig,
-  };
+  function handleDataFetch(newOptions) {
+    startTransition(async () => {
+      const data = await runAction(getDataTableAction, newOptions);
+      console.log(data);
+    });
+  }
+
   return (
     <div className="h-full flex justify-center items-center text-gray-900 dark:text-gray-100 p-6">
       <main className="bg-white dark:bg-gray-950 shadow-xl max-w-6xl w-full h-full rounded-xl overflow-hidden flex flex-col text-lg">
@@ -119,25 +130,25 @@ export default function DataTable({ config: parentConfig }) {
             </Button>
           </div>
         </header>
-        <HorizontalLoader loading={config.loading} />
+        <HorizontalLoader loading={isPending} />
 
         {/* Table Section */}
         <div className="flex-1 p-6 overflow-hidden">
           <div className="h-full border border-gray-200 relative dark:border-gray-700 rounded-xl shadow-sm overflow-hidden flex flex-col">
-            {config.items.length ? (
+            {tableData.items.length ? (
               <div
                 className={cn(
                   "overflow-auto flex-1",
-                  config?.loading && "opacity-50"
+                  isPending && "opacity-50"
                 )}
               >
-                <Table config={config} />
+                <Table result={tableData} />
               </div>
             ) : (
               <div
                 className={cn(
                   "p-4 flex justify-center flex-col items-center h-full text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-amber-1200",
-                  config?.loading && "opacity-50"
+                  isPending && "opacity-50"
                 )}
               >
                 <div className="mb-3">{config.noDataIcon}</div>
@@ -171,7 +182,7 @@ export default function DataTable({ config: parentConfig }) {
           </div>
           <div className="flex-1">
             <Pagination
-              itemsCount={100}
+              itemsCount={tableData?.total || 0}
               page={tableOptions.page}
               onPageChange={(val) => updateTable("page", val)}
               itemsPerPage={tableOptions.itemsPerPage}
@@ -180,11 +191,13 @@ export default function DataTable({ config: parentConfig }) {
           </div>
           <div className="flex gap-x-2 text-base flex-1 justify-end">
             <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
-              Total: {config?.totalItems || "0"}
+              Total: {tableData?.total || "0"}
             </span>
-            <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
-              Filtered: {config.totalFilteredItems || "0"}
-            </span>
+            {tableData.filtered != tableData.total && (
+              <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
+                Filtered: {tableData.filtered || "0"}
+              </span>
+            )}
           </div>
         </footer>
       </main>
