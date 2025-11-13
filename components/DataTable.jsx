@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useTransition } from "react";
+import React, { useEffect, useRef, useState, useTransition } from "react";
 import Table from "./Table";
 import Button from "./Button";
 import Filter from "./Filter";
@@ -19,6 +19,7 @@ import InputField from "./fields/InputField";
 import Popover from "./Popover";
 import PopoverMenu from "./PopoverMenu";
 import { getDataTableAction } from "@/actions/dataTableAction";
+import DataTableCard from "./DataTableCard";
 
 export default function DataTable({ config: parentConfig }) {
   const config = {
@@ -40,6 +41,7 @@ export default function DataTable({ config: parentConfig }) {
   const [tableData, setTableData] = useState(config.firstData);
   const popoverRef = useRef();
   const [isPending, startTransition] = useTransition();
+  const sectionRef = useRef();
 
   function updateTable(key, val) {
     setTableOptions((prev) => {
@@ -86,8 +88,21 @@ export default function DataTable({ config: parentConfig }) {
     });
   }
 
+  useEffect(() => {
+    function checkSize() {
+      if (!sectionRef.current instanceof HTMLElement) return;
+      const showTable =
+        sectionRef.current.offsetWidth == document.body.offsetWidth;
+    }
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
+  });
+
   return (
-    <div className="h-full flex justify-center items-center text-gray-900 dark:text-gray-100 p-6">
+    <div
+      className="h-full flex justify-center items-center text-gray-900 dark:text-gray-100 p-6"
+      ref={sectionRef}
+    >
       <main className="bg-white dark:bg-gray-950 shadow-xl max-w-6xl w-full h-full rounded-xl overflow-hidden flex flex-col text-lg">
         {/* Header */}
         <header className="items-center bg-amber-100 dark:bg-amber-1000 text-amber-900 dark:text-amber-50 p-3 border-b border-amber-200 dark:border-amber-950 flex flex-col lg:flex-row gap-3">
@@ -142,7 +157,8 @@ export default function DataTable({ config: parentConfig }) {
                   isPending && "opacity-50"
                 )}
               >
-                <Table result={tableData} />
+                {/* <Table result={tableData} /> */}
+                <DataTableCard result={tableData} />
               </div>
             ) : (
               <div

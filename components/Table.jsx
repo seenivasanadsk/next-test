@@ -2,12 +2,13 @@
 import Link from "next/link";
 import cn from "@/utils/cn";
 import display from "@/utils/display";
+import { getFormatedTimeStamp } from "@/utils/dateTime";
 
 export default function Table({ result }) {
   const { items = [], headers = [], editURL, deleteAction } = result || {};
 
   return (
-    <table className="min-w-full border-collapse text-sm md:text-base">
+    <table className="min-w-full border-collapse">
       <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-amber-50 uppercase tracking-wide shadow-sm">
         <tr>
           {headers.map((header, i) => (
@@ -40,8 +41,9 @@ export default function Table({ result }) {
               <td
                 key={`${itemIndex}-${headerIndex}`}
                 className="px-4 py-2 whitespace-nowrap text-gray-800 dark:text-gray-100"
+                title={getFormatedTimeStamp(item[header.valuePath])}
               >
-                {display(item[header.valuePath])}
+                {display(item[header.valuePath], header?.display)}
               </td>
             ))}
 

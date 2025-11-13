@@ -185,7 +185,10 @@ function formatDateTime(dateObj = new Date(), pattern = "dd-mm-yyyy hh:ii AA") {
 /**
  * Get current date-time (always returns formatted object)
  */
-export function getCurrentDateTime(pattern = "dd-mm-yyyy hh:ii AA", timezone = DEFAULT_TIMEZONE) {
+export function getCurrentDateTime(
+  pattern = "dd-mm-yyyy hh:ii AA",
+  timezone = DEFAULT_TIMEZONE
+) {
   return formatDateTime(new Date(), pattern);
 }
 
@@ -216,7 +219,10 @@ export function convertToTime(input) {
 /**
  * Parse existing Date object to formatted strings (replaces old parseDateTime)
  */
-export function formatDateObject(dateObject = new Date(), pattern = "dd-mm-yyyy hh:ii AA") {
+export function formatDateObject(
+  dateObject = new Date(),
+  pattern = "dd-mm-yyyy hh:ii AA"
+) {
   if (!(dateObject instanceof Date) || isNaN(dateObject.getTime())) {
     return getCurrentDateTime();
   }
@@ -322,6 +328,21 @@ export function humanizeDateTime(input, type = "datetime", options = {}) {
   return `${dateStr} ${timeStr}`;
 }
 
+function isValidDateString(value) {
+  if (typeof value !== "string") return false;
+  // Strict ISO 8601 format (e.g., 2025-11-08T10:18:56.390Z or 2025-11-08)
+  const isoRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?Z)?$/;
+  if (!isoRegex.test(value)) return false;
+  const date = new Date(value);
+  return date instanceof Date && !isNaN(date);
+}
+
+export function getFormatedTimeStamp(val) {
+  return isValidDateString(val)
+    ? formatDateObject(new Date(val))?.timeStamp
+    : val;
+}
+
 // Default export for backward compatibility
 export default {
   parseDateTime,
@@ -330,4 +351,5 @@ export default {
   convertToTime,
   formatDateObject,
   humanizeDateTime,
+  getFormatedTimeStamp,
 };

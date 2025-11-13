@@ -52,7 +52,7 @@ export default function Pagination({
   const pageSizeOptions = [25, 50, 100, 150, 200];
 
   return (
-    <div className="flex flex-col md:flex-row justify-center items-center gap-3 py-2 text-sm">
+    <div className="flex flex-row justify-center items-center gap-3 py-2 text-sm">
       {/* --- Page Navigation --- */}
       <div className="flex items-center gap-1">
         {/* Prev button */}

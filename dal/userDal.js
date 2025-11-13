@@ -6,7 +6,7 @@ import { findWithTableOptions } from "@/lib/dataTable";
 function getUserTableHeaders() {
   return [
     {
-      title: "Username",
+      title: "User",
       valuePath: "username",
       sortable: true,
       filterable: null,
@@ -28,7 +28,7 @@ function getUserTableHeaders() {
       display: "dateTime",
     },
     {
-      title: "Last Pass Reset",
+      title: "Pass Reset",
       valuePath: "lastPasswordReset",
       sortable: true,
       filterable: "Date",
@@ -86,7 +86,9 @@ export async function updateUserLastAccess(userId) {
 
 export async function updateUserById(updates, id) {
   const db = await getDb();
-  const result = await db.collection("users").updateOne({ _id: id }, { $set: updates });
+  const result = await db
+    .collection("users")
+    .updateOne({ _id: id }, { $set: updates });
   return result;
 }
 
