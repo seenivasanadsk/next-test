@@ -6,9 +6,12 @@ import Filter from "./Filter";
 import {
   ChevronUp,
   FileSearchIcon,
+  IdCard,
   Pin,
   PlusCircleIcon,
   Search,
+  Grid3X3,
+  ChevronDown,
 } from "lucide-react";
 import Pagination from "./Pagination";
 import HorizontalLoader from "./HorizontalLoader";
@@ -20,6 +23,7 @@ import Popover from "./Popover";
 import PopoverMenu from "./PopoverMenu";
 import { getDataTableAction } from "@/actions/dataTableAction";
 import DataTableCard from "./DataTableCard";
+import { useActionHandler } from "@/context/ActionHandlerProvider";
 
 export default function DataTable({ config: parentConfig }) {
   const config = {
@@ -32,6 +36,7 @@ export default function DataTable({ config: parentConfig }) {
     onAdd: () => {},
     ...parentConfig,
   };
+  const pageSizeOptions = [25, 50, 100, 150, 200];
 
   const [tableOptions, setTableOptions] = useState({
     page: 1,
@@ -42,10 +47,13 @@ export default function DataTable({ config: parentConfig }) {
   const popoverRef = useRef();
   const [isPending, startTransition] = useTransition();
   const sectionRef = useRef();
+  const [tableView, setTableView] = useState(true);
+  const { runAction } = useActionHandler();
 
   function updateTable(key, val) {
+    let newOptions = {};
     setTableOptions((prev) => {
-      const newOptions = { ...prev };
+      newOptions = { ...prev };
       switch (key) {
         case "itemsPerPage":
           newOptions["itemsPerPage"] = val;
@@ -56,16 +64,16 @@ export default function DataTable({ config: parentConfig }) {
           break;
       }
       console.log(newOptions);
-      handleDataFetch(newOptions);
       return newOptions;
     });
+    handleDataFetch(newOptions);
   }
 
   const savedFilter = [
     { label: "Delivery Filter" },
     { label: "Settings Filter" },
-    // { label: "Tokens Filter" },
-    // { label: "Ledger Filter" },
+    { label: "Tokens Filter" },
+    { label: "Ledger Filter" },
     // { label: "User Filter" },
     // { label: "Profile Filter" },
     // { label: "Logout Filter" },
@@ -76,6 +84,9 @@ export default function DataTable({ config: parentConfig }) {
   });
   useHotkeys(["1", "2"], (e) => {
     console.log("Saved Filter", e.key);
+  });
+  useHotkeys(["alt+t", "7"], () => {
+    setTableView(!tableView);
   });
   useHotkeys(["alt+g", "8"], () => {
     popoverRef.current.toggle();
@@ -117,6 +128,9 @@ export default function DataTable({ config: parentConfig }) {
             )}
           </div>
           <div className="flex-1 items-start flex gap-2 justify-end">
+            <Button size="sm" onClick={() => setTableView(!tableView)}>
+              {tableView ? <Grid3X3 /> : <IdCard />}
+            </Button>
             <Popover
               ref={popoverRef}
               trigger={
@@ -148,7 +162,7 @@ export default function DataTable({ config: parentConfig }) {
         <HorizontalLoader loading={isPending} />
 
         {/* Table Section */}
-        <div className="flex-1 p-6 overflow-hidden">
+        <div className={cn("flex-1 overflow-hidden", tableView && "p-6")}>
           <div className="h-full border border-gray-200 relative dark:border-gray-700 rounded-xl shadow-sm overflow-hidden flex flex-col">
             {tableData.items.length ? (
               <div
@@ -157,8 +171,11 @@ export default function DataTable({ config: parentConfig }) {
                   isPending && "opacity-50"
                 )}
               >
-                {/* <Table result={tableData} /> */}
-                <DataTableCard result={tableData} />
+                {tableView ? (
+                  <Table result={tableData} />
+                ) : (
+                  <DataTableCard result={tableData} />
+                )}
               </div>
             ) : (
               <div
@@ -202,10 +219,35 @@ export default function DataTable({ config: parentConfig }) {
               page={tableOptions.page}
               onPageChange={(val) => updateTable("page", val)}
               itemsPerPage={tableOptions.itemsPerPage}
-              onItemsPerPageChange={(val) => updateTable("itemsPerPage", val)}
             />
           </div>
           <div className="flex gap-x-2 text-base flex-1 justify-end">
+            <div className="relative inline-block">
+              <select
+                id="itemsPerPage"
+                value={tableOptions.itemsPerPage}
+                onChange={(e) =>
+                  updateTable("itemsPerPage", Number(e.target.value))
+                }
+                className="
+                  bg-transparent cursor-pointer px-1 py-[2px] pr-6 
+                  rounded border-2 outline-none appearance-none
+                  dark:bg-amber-1000 dark:text-amber-50
+                "
+              >
+                {pageSizeOptions.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+
+              {/* Custom dropdown arrow */}
+              <ChevronDown
+                size={16}
+                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-amber-800 dark:text-amber-50"
+              />
+            </div>
             <span className="rounded bg-amber-600 dark:bg-amber-800 px-2 py-0.5 text-amber-50 dark:text-amber-50">
               Total: {tableData?.total || "0"}
             </span>

@@ -13,7 +13,7 @@ export default function Filter({ className }) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({});
 
-  useHotkeys(["alt+f", "7"], (e) => {
+  useHotkeys(["alt+f", "9"], (e) => {
     e.preventDefault();
     setOpen(!open);
   });
@@ -21,7 +21,7 @@ export default function Filter({ className }) {
   const trigger = (
     <Button
       prefix={<Funnel />}
-      title="(Alt+F or 7) Filter Records"
+      title="(Alt+F or 9) Filter Records"
       size="sm"
       onClick={() => setOpen(!open)}
     >

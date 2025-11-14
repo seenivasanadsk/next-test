@@ -15,7 +15,7 @@ export default function ProtectedShell({ children }) {
   const { runAction } = useActionHandler();
   const { settings, updateSetting } = useSettings();
   const { isSidebarOpen = false } = settings;
-  const { screenWidth, screenHeight, device } = useScreen();
+  const { device } = useScreen();
 
   function toggleSidebar(e) {
     e?.preventDefault();
@@ -32,7 +32,7 @@ export default function ProtectedShell({ children }) {
   }, [session?.isValid, runAction]);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-dvh overflow-hidden">
       <main
         className={cn(
           "flex-1 transition-all duration-250 ease-in-out",
@@ -42,7 +42,7 @@ export default function ProtectedShell({ children }) {
       >
         {device == "sm" && isSidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/50 z-50"
+            className="fixed inset-0 bg-black/50 z-55"
             onClick={toggleSidebar}
           ></div>
         )}

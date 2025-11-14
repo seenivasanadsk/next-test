@@ -9,7 +9,7 @@ const admin = {
 }
 
 const users = [
-  // ...Array(60).fill(admin),
+  ...Array(600).fill(admin),
   admin,
   { username: "Guna", email: "guna@example.com", password: "Guna@123", role: "Manager" },
   { username: "Nataraj", email: "nataraj@example.com", password: "Nataraj@123", role: "Manager" },

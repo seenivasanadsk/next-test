@@ -41,7 +41,7 @@ const NotificationPopup = ({ notifications, onRemove }) => {
   if (!notifications.length) return null;
 
   return (
-    <div className="fixed top-2 right-2 z-50 space-y-2">
+    <div className="fixed top-2 right-2 z-100 space-y-2">
       {notifications.map((notification) => (
         <NotificationItem
           key={notification.id}

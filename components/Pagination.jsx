@@ -2,7 +2,6 @@
 
 import React from "react";
 import cn from "@/utils/cn";
-import { ChevronDown } from "lucide-react";
 
 export default function Pagination({
   itemsCount = 1,
@@ -10,7 +9,6 @@ export default function Pagination({
   page,
   onPageChange,
   itemsPerPage,
-  onItemsPerPageChange,
 }) {
   // --- Current state from URL ---
   page = Math.max(Number(page) || 1, 1);
@@ -49,7 +47,6 @@ export default function Pagination({
   };
 
   const pageNumbers = getPageNumbers();
-  const pageSizeOptions = [25, 50, 100, 150, 200];
 
   return (
     <div className="flex flex-row justify-center items-center gap-3 py-2 text-sm">
@@ -108,31 +105,6 @@ export default function Pagination({
         >
           <span className="inline-block">&#10148;</span>
         </button>
-      </div>
-      {/* --- Items per page selector --- */}
-      <div className="relative inline-block">
-        <select
-          id="itemsPerPage"
-          value={pageSize}
-          onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-          className="
-            bg-transparent cursor-pointer px-1 py-[2px] pr-6 
-            rounded border-2 outline-none appearance-none
-            dark:bg-amber-1000 dark:text-amber-50
-          "
-        >
-          {pageSizeOptions.map((size) => (
-            <option key={size} value={size}>
-              {size}
-            </option>
-          ))}
-        </select>
-
-        {/* Custom dropdown arrow */}
-        <ChevronDown
-          size={16}
-          className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-amber-800 dark:text-amber-50"
-        />
       </div>
     </div>
   );

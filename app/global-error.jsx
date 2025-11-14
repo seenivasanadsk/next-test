@@ -18,7 +18,7 @@ export default function GlobalError({ error, reset }) {
 
   return (
     <html>
-      <body className="min-h-screen flex items-center justify-center p-6">
+      <body className="min-h-dvh flex items-center justify-center p-6">
         <div className="max-w-xl w-full shadow-lg rounded-2xl p-8 text-center">
           <div className="mb-6 text-6xl">🚨</div>
           <h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
