@@ -19,7 +19,7 @@ import { useActionHandler } from "@/context/ActionHandlerProvider";
 import { logoutAction } from "@/actions/authAction";
 import { useHotkeys } from "react-hotkeys-hook";
 
-export default function Sidebar({ toggleSidebar }) {
+export default function Sidebar({ toggleSidebar, hideOnAction }) {
   const router = useRouter();
   const { session } = useSession();
   const { runAction } = useActionHandler();
@@ -41,6 +41,7 @@ export default function Sidebar({ toggleSidebar }) {
     const currentIndex = themes.indexOf(theme);
     const nextIndex = (currentIndex + 1) % themes.length;
     setTheme(themes[nextIndex]);
+    hideOnAction && toggleSidebar();
   };
 
   const logoutUser = (e) => {
@@ -48,20 +49,24 @@ export default function Sidebar({ toggleSidebar }) {
     startTransition(async () => {
       const data = await runAction(logoutAction);
       if (data?._id) router.refresh();
+      hideOnAction && toggleSidebar();
     });
   };
 
   const navigateHome = (e) => {
     e?.preventDefault();
     router.push("/");
+    hideOnAction && toggleSidebar();
   };
   const navigateProfile = (e) => {
     e?.preventDefault();
     router.push("/profile");
+    hideOnAction && toggleSidebar();
   };
   const navigateSettings = (e) => {
     e?.preventDefault();
     router.push("/settings");
+    hideOnAction && toggleSidebar();
   };
 
   // -------------------------------

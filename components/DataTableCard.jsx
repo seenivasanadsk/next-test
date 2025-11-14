@@ -77,7 +77,7 @@ export default function DataTableCard({ result }) {
             </div>
 
             {/* Card Footer */}
-            <div className="mt-3 flex justify-end gap-2"></div>
+            {/* <div className="mt-3 flex justify-end gap-2"></div> */}
           </div>
         ))}
       </div>

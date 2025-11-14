@@ -6,6 +6,7 @@ import { ThemeProvider } from "../context/ThemeProvider";
 import { NotificationProvider } from "@/context/NotificationProvider";
 import { ActionHandlerProvider } from "@/context/ActionHandlerProvider";
 import cn from "@/utils/cn";
+import { ScreenProvider } from "@/context/ScreenProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,11 +25,13 @@ export default function RootLayout({ children }) {
       </head>
 
       <body className={cn(inter.className, "font-medium")}>
-        <ThemeProvider>
-          <NotificationProvider>
-            <ActionHandlerProvider>{children}</ActionHandlerProvider>
-          </NotificationProvider>
-        </ThemeProvider>
+        <ScreenProvider>
+          <ThemeProvider>
+            <NotificationProvider>
+              <ActionHandlerProvider>{children}</ActionHandlerProvider>
+            </NotificationProvider>
+          </ThemeProvider>
+        </ScreenProvider>
       </body>
     </html>
   );
