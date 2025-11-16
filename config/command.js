@@ -1,6 +1,7 @@
 const common = {
-  dbName: "test",
-  dbURI: "mongodb://localhost:27017",
+    dbName: "test",
+    // dbURI: "mongodb://localhost:27017",
+    dbURI: "mongodb+srv://seeni:dbpass@cluster0.9hnayrh.mongodb.net/?appName=Cluster0", // atlass
 }
 
 export default {
