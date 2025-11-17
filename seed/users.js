@@ -6,17 +6,47 @@ const admin = {
   email: process.env.ADMIN_EMAIL || "admin@example.com",
   password: process.env.ADMIN_PASSWORD || "Admin@123",
   role: "Admin",
-}
+};
 
 const users = [
-  ...Array(600).fill(admin),
+  // ...Array(600).fill(admin),
   admin,
-  { username: "Guna", email: "guna@example.com", password: "Guna@123", role: "Manager" },
-  { username: "Nataraj", email: "nataraj@example.com", password: "Nataraj@123", role: "Manager" },
-  { username: "VJ", email: "vj@example.com", password: "VJ@123", role: "Manager" },
-  { username: "Seeni", email: "seeni@example.com", password: "Seeni@123", role: "Manager" },
-  { username: "Sara", email: "sara@example.com", password: "Sara@123", role: "Manager" },
-  { username: "Ramki", email: "ramki@example.com", password: "Ramki@123", role: "Manager" },
+  {
+    username: "Guna",
+    email: "guna@example.com",
+    password: "Guna@123",
+    role: "Manager",
+  },
+  {
+    username: "Nataraj",
+    email: "nataraj@example.com",
+    password: "Nataraj@123",
+    role: "Manager",
+  },
+  {
+    username: "VJ",
+    email: "vj@example.com",
+    password: "VJ@123",
+    role: "Manager",
+  },
+  {
+    username: "Seeni",
+    email: "seeni@example.com",
+    password: "Seeni@123",
+    role: "Manager",
+  },
+  {
+    username: "Sara",
+    email: "sara@example.com",
+    password: "Sara@123",
+    role: "Manager",
+  },
+  {
+    username: "Ramki",
+    email: "ramki@example.com",
+    password: "Ramki@123",
+    role: "Manager",
+  },
 ];
 
 // Hash all passwords safely

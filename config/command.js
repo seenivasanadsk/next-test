@@ -1,8 +1,8 @@
 const common = {
-    dbName: "test",
-    // dbURI: "mongodb://localhost:27017",
-    dbURI: "mongodb+srv://seeni:dbpass@cluster0.9hnayrh.mongodb.net/?appName=Cluster0", // atlass
-}
+  dbName: "test",
+  dbURI: "mongodb://localhost:27017",
+  // dbURI: "mongodb+srv://seeni:dbpass@cluster0.9hnayrh.mongodb.net/?appName=Cluster0", // atlass
+};
 
 export default {
   route: {
@@ -36,15 +36,15 @@ export default {
     dbURI: common.dbURI,
   },
   server: {
-    port: 2000
+    port: 2000,
   },
   log: {
     logDir: "./logs",
     maxLogDays: 7,
-    lines: 10
+    lines: 10,
   },
   schedule: {
     prefix: "ntapp-",
-    scriptPath: "./schedule"
-  }
+    scriptPath: "./schedule",
+  },
 };
