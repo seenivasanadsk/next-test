@@ -98,9 +98,8 @@ export default function formatText(text, options = {}) {
       // accept "bgBrightGreen", "brightGreen" or "BrightGreen" — normalize
       const candidate1 = options.bgColor.startsWith("bg")
         ? options.bgColor
-        : `bg${
-            options.bgColor.charAt(0).toUpperCase() + options.bgColor.slice(1)
-          }`;
+        : `bg${options.bgColor.charAt(0).toUpperCase() + options.bgColor.slice(1)
+        }`;
       const key =
         findStyleKeyInsensitive(candidate1) ||
         findStyleKeyInsensitive(options.bgColor);
